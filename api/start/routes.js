@@ -19,3 +19,5 @@ const Route = use('Route')
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
+Route.get('login/facebook', 'UserController.redirect')
+Route.get('facebook/callback', 'UserController.callback')
