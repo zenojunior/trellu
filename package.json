@@ -5,6 +5,6 @@
   },
   "scripts": {
     "postinstall": "npm install --prefix=api",
-    "start": "npm run start --prefix=api"
+    "start": "ENV_SILENT=true npm run start --prefix=api"
   }
 }
