@@ -1,9 +1,12 @@
 {
-  "name": "trellu",
   "engines": {
     "node": "12.x"
   },
   "scripts": {
-    "start": "cd api/ && npm run start"
+    "heroku:install": "npm install -g heroku",
+    "heroku:bash": "heroku run bash --app=trellu-app",
+    "heroku:log": "heroku logs --tail --app=trellu-app",
+    "postinstall": "npm install --prefix=api",
+    "start": "ENV_SILENT=true npm start --prefix=api"
   }
 }
