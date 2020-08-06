@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "start": "ENV_SILENT=true npm start --prefix=api"
+    "start": "ENV_SILENT=true npm start --prefix=api",
+    "migrate": "cd api && ENV_SILENT=true node ace migration:run --force"
   }
 }

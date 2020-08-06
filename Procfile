@@ -1,2 +1,2 @@
-release: ENV_SILENT=true node ace migration:run --force --prefix=api
+release: npm migrate
 web: npm start
