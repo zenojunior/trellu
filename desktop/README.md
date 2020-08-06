@@ -1,56 +1,28 @@
-# Vue Trello Clone
+# trellu
 
-A simple Trello clone in Vue, Vuex and Bulma
+> Desktop Task Manager
 
-![screenshot](docs/screenshot.png)
-
-
-## Features
-
-Trello features
-
-- Single board
-- Re-orderable lists and tasks
-
-Task functionality
-
-- Title, description, date
-- Quick entry and full entry modal
-- Icons and colors to indicate due and overdue items
-- Editable tasks
-
-UI features
-
-- Fast keyboard interaction
-- Smooth animation
-
-State management
-
-- Vuex state management
-- Persistence
-
-
-## Setup
+#### Build Setup
 
 ``` bash
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:9080
 npm run dev
 
-# build for production with minification
+# build electron application for production
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-npm run unit:watch
-
-# run all tests
+# run unit & end-to-end tests
 npm test
+
+
+# lint all JS/Vue component files in `src/`
+npm run lint
+
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+---
+
+This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
