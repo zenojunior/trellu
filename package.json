@@ -3,8 +3,9 @@
     "node": "12.x"
   },
   "scripts": {
+    "heroku:bash": "heroku run bash --app=trellu-app",
+    "heroku:log": "heroku logs --tail --app=trellu-app",
     "postinstall": "npm install --prefix=api",
-    "start": "ENV_SILENT=true npm start --prefix=api",
-    "migrate": "cd api && ENV_SILENT=true node ace migration:run --force"
+    "start": "ENV_SILENT=true npm start --prefix=api"
   }
 }
