@@ -5,11 +5,11 @@
 </template>
 
 <script>
+  import 'buefy/dist/buefy.css'
+  import '@mdi/font/css/materialdesignicons.css'
   export default {
-    name: 'trellu'
   }
 </script>
 
 <style>
-  /* CSS */
 </style>
