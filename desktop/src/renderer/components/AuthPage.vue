@@ -13,6 +13,11 @@
               <button class="button is-primary is-medium" @click="cardModal()">
                 Primeiro acesso
               </button>
+              <div>
+                <!-- <button class="button mt-5" @click="() => this.$router.push('/board')">
+                  Test board
+                </button> -->
+              </div>
             </div>
           </div>
         </main>
@@ -31,6 +36,7 @@
     components: { ModalAuth, Logo },
     methods: {
       cardModal () {
+        this.$api.get('/').then(console.log)
         this.$buefy.modal.open({
           parent: this,
           component: ModalAuth,

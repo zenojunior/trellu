@@ -10,7 +10,8 @@ import state from './global'
 Vue.prototype.$global = state
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
-Vue.http = Vue.prototype.$http = axios
+const api = axios.create({ baseURL: 'https://trellu-app.herokuapp.com' })
+Vue.api = Vue.prototype.$api = api
 Vue.config.productionTip = false
 Vue.use(Buefy, {
   defaultIconPack: 'mdi'
