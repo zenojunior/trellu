@@ -6,7 +6,8 @@ class Signup {
     return {
       username: 'required|unique:users',
       email: 'required|email|unique:users',
-      password: 'required|min:6'
+      password: 'required|min:6',
+      name: 'required'
     }
   }
 
@@ -28,6 +29,7 @@ class Signup {
   get messages () {
     return {
       'username.required': 'Username is required',
+      'name.required': 'Name is required',
       'username.unique': 'This username is already taken by someone else',
       'email.required': 'Enter email address to be used for login',
       'email.email': 'Email address is not valid',
@@ -39,7 +41,7 @@ class Signup {
 
   async fails (errors) {
     return this.ctx.response.status(400).json({
-      message: "Shoot! Something is wrong with your request.",
+      message: "Ops! Algo está errado da requisição",
       errors: errors
     })
   }

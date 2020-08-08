@@ -1,6 +1,6 @@
 'use strict'
 
-class Authorise {
+class Login {
 
   get rules() {
     return {
@@ -32,4 +32,4 @@ class Authorise {
 
 }
 
-module.exports = Authorise
+module.exports = Login
