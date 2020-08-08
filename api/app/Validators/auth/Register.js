@@ -1,6 +1,6 @@
 'use strict'
 
-class Signup {
+class Register {
 
   get rules () {
     return {
@@ -48,4 +48,4 @@ class Signup {
 
 }
 
-module.exports = Signup
+module.exports = Register

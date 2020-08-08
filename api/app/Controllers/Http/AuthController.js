@@ -24,20 +24,10 @@ class AuthController {
   // }
 
   // POST
-  async signup({request, response, auth}) {
-
-    let user  = await User.create(request.all())
-    if (user) {
-      await auth.login(user);
-      // await logger('info', 'User Signup', user.id, user.id, user.email)
-      return response.status(200).json({
-        message: 'ok',
-      })
-    }
-
-    return response.status(500).json({
-      message: 'Something went wrong. Try again or contact admin.',
-    })
+  async register({request, response, auth}) {
+    let user = await User.create(request.all());
+    await auth.login(user);
+    return response.json(user);
   }
 
   async login({request, response, auth}) {
