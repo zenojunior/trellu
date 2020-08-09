@@ -20,6 +20,14 @@ export default new Vue({
   methods: {
     updateTitle (text = this.title) {
       this.titlebar.updateTitle(text)
+    },
+    logout () {
+      return this.$api.get('/api/auth/logout')
+    },
+    errorMessages (err) {
+      console.log(err)
+      if (err.startsWith('E_GUEST_ONLY')) return 'Você já está autenticado'
+      return err
     }
   }
 })

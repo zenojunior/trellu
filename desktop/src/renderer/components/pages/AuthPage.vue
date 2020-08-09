@@ -3,20 +3,17 @@
     <div class="hero-body">
       <div class="container">
         <main class="has-text-centered">
-          <logo class="logo" />
-          <div class="card box-auth">
-            <p>Identifique-se para continuar.</p>
-            <div class="card-content">
-              <button class="button is-medium" @click="cardModal()">
-                Entrar
-              </button>
-              <button class="button is-primary is-medium" @click="cardModal()">
-                Primeiro acesso
-              </button>
-              <div>
-                <!-- <button class="button mt-5" @click="() => this.$router.push('/board')">
-                  Test board
-                </button> -->
+            <logo class="logo" />
+              <div class="card box-auth">
+                <p>Identifique-se para continuar.</p>
+                <div class="card-content">
+                  <button class="button is-medium" @click="openAuthModal(true)">
+                    Entrar
+                  </button>
+                  <button class="button is-primary is-medium" @click="openAuthModal(false)">
+                    Primeiro acesso
+                  </button>
+                <div>
               </div>
             </div>
           </div>
@@ -28,21 +25,26 @@
 </template>
 
 <script>
-  import ModalAuth from './AuthPage/ModalAuth'
-  import Logo from './Logo'
+  import ModalAuth from '../modals/ModalAuth'
+  import Logo from '../Logo'
 
   export default {
     name: 'landing-page',
     components: { ModalAuth, Logo },
     methods: {
-      cardModal () {
-        this.$api.get('/').then(console.log)
+      openAuthModal (hasAccount) {
+        // this.$router.push({name: 'dashboard-page'})
+
+        // this.$global.logout()
         this.$buefy.modal.open({
           parent: this,
           component: ModalAuth,
           hasModalCard: true,
           customClass: 'modal-auth',
-          trapFocus: true
+          trapFocus: true,
+          props: {
+            hasAccount
+          }
         })
       },
       open (link) {
@@ -55,6 +57,8 @@
 <style lang="scss" scoped>
   .logo {
     margin-bottom: 2rem;
+    width: 120px;
+    align-self: center;
   }
   .hero {
     background-color: #F9FAFC;

@@ -6,7 +6,16 @@ class UserController {
 	
 	async redirect({ ally }){
 		await ally.driver('facebook').redirect()
-	}
+  }
+  
+  async *me({ request, response }) {
+    const user = yield request.auth.getUser()
+    if (user) {
+      response.status(200).json(user)
+      return
+    }
+    response.status(401).json({ message: 'Você deve fazer o login para ver o seu perfil' })
+  }
 
 	async callback ({ ally, auth }) {
     try {

@@ -9,8 +9,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  img {
-    width: 120px;
-    align-self: center;
-  }
 </style>

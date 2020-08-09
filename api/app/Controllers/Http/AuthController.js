@@ -36,9 +36,7 @@ class AuthController {
     try {
       return await auth.attempt(email, password);
     } catch (error) {
-      return response.status(500).json({
-        message: 'Something went wrong. Try again or contact admin.',
-      })
+      return response.status(401).json({ message: 'O e-mail ou senha estão incorretos.' })
     }
   }
 
@@ -48,9 +46,9 @@ class AuthController {
       if (isLogged) {
         await auth.logout();
       }
-      return response.status(403).send('Desconectado')
+      return response.status(200).json({ message: 'Usuário deslogado.' })
     } catch (error) {
-      return response.status(403).send('Não Logado')
+      return response.status(200).json({ message: 'Não há usuário autenticado.' })
     }
 
 
