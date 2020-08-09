@@ -43,8 +43,8 @@ export default {
     return {
       name: '',
       username: '',
-      email: 'me@zenojunior.com',
-      password: 'teste123',
+      email: '',
+      password: '',
       account: this.hasAccount,
       loading: false,
       errors: [],
