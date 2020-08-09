@@ -6,13 +6,13 @@
       </header>
       <section class="modal-card-body">
         <b-field label="Usuário" v-if="!account">
-          <b-input type="username" v-model="username" required></b-input>
+          <b-input type="text" v-model="username" required></b-input>
         </b-field>
         <b-field label="E-mail">
           <b-input type="email" v-model="email" placeholder="exemplo@gmail.com" required></b-input>
         </b-field>
         <b-field label="Nome" v-if="!account">
-          <b-input type="name" v-model="name" required></b-input>
+          <b-input type="text" v-model="name" required></b-input>
         </b-field>
         <b-field label="Senha">
           <b-input
@@ -57,10 +57,8 @@ export default {
     },
     check () {
       this.loading = true
-      this.$api.post(`/api/auth/${this.account ? 'login' : 'register'}`, {
-        email: this.email,
-        password: this.password
-      }).then(res => {
+      let { name, username, email, password } = this
+      this.$api.post(`/api/auth/${this.account ? 'login' : 'register'}`, { name, username, email, password }).then(res => {
         this.close()
         localStorage.setItem('user', JSON.stringify(res.data))
         this.$router.push('/dashboard')
