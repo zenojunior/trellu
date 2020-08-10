@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "Tréllu",
-    "appId": "univates.trellu.app",
+    "productName": "Trellu",
+    "appId": "com.electron.trellu",
     "directories": {
       "output": "build"
     },
