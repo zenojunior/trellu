@@ -9,7 +9,9 @@ branches:
 image: Visual Studio 2017
 platform:
   - x64
-
+only_commits:
+  files:
+    - desktop/
 cache:
   - node_modules
   - '%APPDATA%\npm-cache'
