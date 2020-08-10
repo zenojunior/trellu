@@ -17,7 +17,7 @@ class AuthController {
       return response.status(201).json(data)
     } catch (e) {
       await transition.rollback()
-      return response.status(401).json({message: 'Erro ao cadastrar o usuário. Caso o erro persista, entre em contato com o Administrador.'})
+      return response.status(500).json({message: 'Erro ao cadastrar o usuário. Caso o erro persista, entre em contato com o Administrador.'})
     }
   }
 
