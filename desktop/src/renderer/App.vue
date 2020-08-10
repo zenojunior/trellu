@@ -21,8 +21,6 @@
   }
   .navbar.is-fixed-top {
     top: 30px;
-  }
-  .has-navbar-fixed-top .container-after-titlebar {
-    top: calc(30px + 52px)!important
+    + .container { margin-top: 3.25rem; }
   }
 </style>

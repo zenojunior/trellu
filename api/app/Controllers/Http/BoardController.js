@@ -1,7 +1,6 @@
 'use strict'
-const User = use('App/Models/Board')
+const Board = use('App/Models/Board')
 const Database = use('Database')
-
 class BoardController {
 
   async boards({response, auth}) {
@@ -14,6 +13,14 @@ class BoardController {
     }
   }
 
+  async create({request, response}) {
+    try {
+      const board = await Board.create(request.all())
+      return response.status(200).json(board);
+    } catch (error) {
+      return response.status(500).json({message: 'Erro ao buscar criar o quadro.', error})
+    }
+  }
 
   async board({request, response}) {
     try {

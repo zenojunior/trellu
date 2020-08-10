@@ -1,18 +1,37 @@
 <template>
   <b-navbar shadow type="is-primary" fixed-top>
         <template slot="start">
-            <b-navbar-item to="/dashboard">
-                Boards
+          <b-tooltip 
+            label="Quadros"
+            type="is-dark"
+            position="is-bottom"
+          >
+            <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/dashboard' }" type="is-primary">
+              <b-icon icon="view-grid"></b-icon>
             </b-navbar-item>
+          </b-tooltip>
+          <b-tooltip 
+            label="Minha conta"
+            type="is-dark"
+            position="is-bottom"
+          >
+            <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/user' }" type="is-primary">
+              <b-icon icon="account"></b-icon>
+            </b-navbar-item>
+          </b-tooltip>
         </template>
 
         <template slot="end">
             <b-navbar-item tag="div">
-                <div class="buttons">
-                    <button class="button is-white" outlined @click="() => logout()">
-                      Sair
-                    </button>
-                </div>
+              <b-tooltip 
+                label="Sair"
+                type="is-dark"
+                position="is-bottom"
+              >
+                  <b-button type="is-primary" inverted outlined @click="() => logout()">
+                    <b-icon icon="logout-variant"></b-icon>
+                  </b-button>
+              </b-tooltip>
             </b-navbar-item>
         </template>
     </b-navbar>
@@ -45,6 +64,15 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.navbar-start {
+  align-items: center;
+  padding-left: 15px;
+  > span {
+    margin-right: 5px;
+  }
+}
+</style>
 <style lang="scss" scoped>
   .trellu-navbar {
     background-color: #5E2B97;

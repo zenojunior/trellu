@@ -22,6 +22,14 @@ let router = new Router({
       }
     },
     {
+      path: '/user',
+      name: 'user-page',
+      component: require('@/components/pages/UserPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '*',
       redirect: '/'
     }
