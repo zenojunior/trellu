@@ -18,7 +18,7 @@ class Login {
   get messages() {
     return {
       'email.required': 'Endereço de email é obrigatório',
-      'password.required': 'Senha  obrigatória',
+      'password.required': 'Senha é obrigatória',
 
     }
   }

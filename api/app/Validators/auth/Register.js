@@ -28,14 +28,14 @@ class Register {
 
   get messages () {
     return {
-      'username.required': 'Username is required',
-      'name.required': 'Name is required',
-      'username.unique': 'This username is already taken by someone else',
-      'email.required': 'Enter email address to be used for login',
-      'email.email': 'Email address is not valid',
-      'email.unique': 'There\'s already an account with this email address',
-      'password.required': 'Choose password for your account',
-      'password.min': 'Password needs to be at least 6 characters long.'
+      'username.required': 'Usuário é obrigatório',
+      'name.required': 'Nome é obrigatório',
+      'username.unique': 'Este usuário já está em uso',
+      'email.required': 'Endereço de email é obrigatório',
+      'email.email': 'Email inválido',
+      'email.unique': 'Email já está cadastrado',
+      'password.required': 'Senha é obrigatória',
+      'password.min': 'A senha deve possuir ao menos 6 caracteres'
     }
   }
 
