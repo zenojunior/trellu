@@ -16,6 +16,23 @@ const baseUrl = {
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 const api = axios.create({ baseURL: baseUrl[process.env.NODE_ENV] })
+api.interceptors.response.use(
+  response => response,
+  error => {
+    switch (error.response.data.error.name) {
+      case 'InvalidSessionException':
+        localStorage.clear()
+        router.replace({path: '/'})
+        break
+      case 'HttpException':
+        api.get('api/auth/logout')
+        break
+      default:
+        break
+    }
+  }
+)
+
 Vue.api = Vue.prototype.$api = api
 Vue.config.productionTip = false
 Vue.use(Buefy, {

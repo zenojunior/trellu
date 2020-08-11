@@ -4,16 +4,10 @@
     <div class="container is-fluid pt-6">
       <ul class="columns is-variable is-3 ">
         <li v-for="(board, index) of boards" class="column is-one-quarter">
-          <a class="board-tile" href="#">{{ board.title }}</a>
+          <a class="board-tile" @click="openBoard(board.id)">{{ board.title }}</a>
         </li>
         <li class="column is-one-quarter">
           <a class="board-tile add" @click="openModalAddBoard()">Criar novo quadro</a>
-        </li>
-      </ul>
-
-      <ul>
-        <li v-for="(board, index) of boards" class="column is-one-quarter">
-          <a @click="deleteBoard(board.id)" class="button" :key="index">{{ index }} - Apagar {{ board.title }}</a>
         </li>
       </ul>
     </div>
@@ -28,10 +22,14 @@ import { mapState } from 'vuex'
 export default {
   created () {
     this.$api.get('/api/boards').then(res => res.data).then((boards) => {
+      boards.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
       this.$store.dispatch('SET_BOARDS', boards)
     })
   },
   methods: {
+    openBoard (id) {
+      this.$router.push({ name: 'board-page', params: {id} })
+    },
     openModalAddBoard () {
       this.$buefy.modal.open({
         parent: this,
@@ -39,11 +37,6 @@ export default {
         hasModalCard: true,
         customClass: 'modal-add-board',
         trapFocus: true
-      })
-    },
-    deleteBoard (id) {
-      this.$api.delete(`/api/boards/${id}`).then(res => res.data).then((board) => {
-        this.$store.dispatch('DELETE_BOARD', id)
       })
     }
   },

@@ -42,7 +42,7 @@ class BoardController {
 
   async board({response, params}) {
     try {
-      const board = await Database.table('boards').where('id', params.id)
+      const board = await Database.table('boards').where('id', params.id).first()
       return response.status(200).json(board)
     } catch (error) {
       return response.status(500).json({message: 'Erro ao buscar o quadro.'})

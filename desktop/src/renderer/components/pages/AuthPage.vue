@@ -33,9 +33,6 @@
     components: { ModalAuth, Logo },
     methods: {
       openAuthModal (hasAccount) {
-        // this.$router.push({name: 'dashboard-page'})
-
-        // this.$global.logout()
         this.$buefy.modal.open({
           parent: this,
           component: ModalAuth,

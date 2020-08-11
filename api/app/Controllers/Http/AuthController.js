@@ -13,8 +13,8 @@ class AuthController {
       let user = await User.create(request.all())
       await auth.login(user)
       await transition.commit()
-      const data = {'name': user.name, 'email': user.email, 'username': user.username}
-      return response.status(201).json(data)
+      const { email, name, username } = user;
+      return response.status(201).json({name, email, username})
     } catch (e) {
       await transition.rollback()
       return response.status(500).json({message: 'Erro ao cadastrar o usuário. Caso o erro persista, entre em contato com o Administrador.'})
@@ -27,8 +27,8 @@ class AuthController {
     try {
       await auth.attempt(email, password)
       const user = await auth.getUser()
-      const data = {'name': user.name, 'email': user.email, 'username': user.username}
-      return response.status(201).json(data)
+      const { name, username } = user;
+      return response.status(201).json({name, email, username})
     } catch (error) {
       return response.status(401).json({message: 'O e-mail ou senha estão incorretos.'})
     }
