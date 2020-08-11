@@ -6,10 +6,10 @@ class BoardController {
   async boards({response, auth}) {
     try {
       const user = await auth.getUser()
-      const boards = await Board.where('user_id', user.id)
+      const boards = await Database.table('boards').where('user_id', user.id)
       return response.status(200).json(boards)
     } catch (error) {
-      return response.status(500).json({message: 'Erro na listagem de quadros.'})
+      return response.status(500).json({message: 'Erro na listagem de quadros.', error})
     }
   }
 
@@ -42,7 +42,7 @@ class BoardController {
 
   async board({response, params}) {
     try {
-      const board = await Board.where('id', params.id)
+      const board = await Database.table('boards').where('id', params.id)
       return response.status(200).json(board)
     } catch (error) {
       return response.status(500).json({message: 'Erro ao buscar o quadro.'})
