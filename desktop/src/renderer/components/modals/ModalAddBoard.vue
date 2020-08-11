@@ -2,13 +2,13 @@
   <div class="add-board-box">
     <div>
       <div class="board-title create-board-tile">
-        <input type="text" v-model="title" placeholder="Adicionar título do quadro">
+        <input type="text" v-model="data.title" placeholder="Adicionar título do quadro">
         <b-button @click="close()" class="close-modal" icon-right="close"></b-button>
       </div>
       <ul class="background-grid"></ul>
     </div>
     <div>
-      <b-button type="is-success" :disabled="!title.length">Criar quadro</b-button>
+      <b-button @click="add()" type="is-success" :disabled="!data.title.length">Criar quadro</b-button>
     </div>
   </div>
 </template>
@@ -17,10 +17,21 @@
 export default {
   data () {
     return {
-      title: ''
+      data: {
+        title: '',
+        featured: false,
+        structure: '{}',
+        color: '#ddd'
+      }
     }
   },
   methods: {
+    add () {
+      this.$api.post('/api/boards', this.data).then(res => {
+        this.$store.dispatch('ADD_BOARD', res.data)
+        this.close()
+      })
+    },
     close () {
       this.$parent.close()
     }
