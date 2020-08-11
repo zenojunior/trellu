@@ -20,12 +20,8 @@ cache:
 
 init:
   - git config --global core.autocrlf input
-environment:
-  matrix:
-    - nodejs_version: 10
-    - nodejs_version: 12
 install:
-  - ps: Install-Product node 8 x64
+  - ps: Install-Product node 12 x64
   - git reset --hard HEAD
   - yarn
   - node --version
