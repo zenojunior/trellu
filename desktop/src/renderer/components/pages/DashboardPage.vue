@@ -3,11 +3,17 @@
     <navbar></navbar>
     <div class="container is-fluid pt-6">
       <ul class="columns is-variable is-3 ">
-        <li v-for="(board, index) in boards" class="column is-one-quarter">
-          <a class="board-tile" href="#">sasaas</a>
+        <li v-for="(board, index) of boards" class="column is-one-quarter">
+          <a class="board-tile" href="#">{{ board.title }}</a>
         </li>
         <li class="column is-one-quarter">
           <a class="board-tile add" @click="openModalAddBoard()">Criar novo quadro</a>
+        </li>
+      </ul>
+
+      <ul>
+        <li v-for="(board, index) of boards" class="column is-one-quarter">
+          <a @click="deleteBoard(board.id)" class="button" :key="index">{{ index }} - Apagar {{ board.title }}</a>
         </li>
       </ul>
     </div>
@@ -17,11 +23,13 @@
 <script>
 import Navbar from '../Navbar'
 import ModalAddBoard from '../modals/ModalAddBoard'
+import { mapState } from 'vuex'
+
 export default {
-  data () {
-    return {
-      boards: []
-    }
+  created () {
+    this.$api.get('/api/boards').then(res => res.data).then((boards) => {
+      this.$store.dispatch('SET_BOARDS', boards)
+    })
   },
   methods: {
     openModalAddBoard () {
@@ -32,7 +40,17 @@ export default {
         customClass: 'modal-add-board',
         trapFocus: true
       })
+    },
+    deleteBoard (id) {
+      this.$api.delete(`/api/boards/${id}`).then(res => res.data).then((board) => {
+        this.$store.dispatch('DELETE_BOARD', id)
+      })
     }
+  },
+  computed: {
+    ...mapState({
+      boards: state => state.Board.boards
+    })
   },
   components: {
     Navbar,
