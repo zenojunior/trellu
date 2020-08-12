@@ -21,7 +21,7 @@ export default {
         title: '',
         featured: false,
         structure: '{}',
-        color: '#ddd'
+        color: '#7957d5'
       }
     }
   },

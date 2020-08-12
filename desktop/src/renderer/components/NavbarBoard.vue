@@ -1,23 +1,40 @@
 <template>
-  <b-navbar shadow type="is-primary" fixed-top>
+  <b-navbar shadow type="is-primary" fixed-top :style="backgroundStyle">
     <template slot="start">
-      <b-tooltip 
-        label="Quadros"
-        type="is-dark"
-        position="is-bottom"
-      >
-        <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ name: 'dashboard-page' }" type="is-primary">
-          <b-icon icon="view-grid"></b-icon>
-        </b-navbar-item>
-      </b-tooltip>
       <input spellcheck="false" dir="auto" @focus="$event.target.select()" @change="updateBoardTitle()" v-model="board.title" class="board-title" type="text">
     </template>
 
     <template slot="end">
       <b-navbar-item tag="div">
+        <b-button 
+          @click="$router.push({ name: 'dashboard-page' })"
+          class="button is-primary is-outlined is-inverted"
+          icon-left="arrow-left"
+        >
+            Voltar
+        </b-button>
+      </b-navbar-item>
+      <b-navbar-item tag="div" style="padding-left: 0">
+        <b-dropdown position="is-bottom-left" append-to-body aria-role="menu" trap-focus>
+          <a
+            class="button is-primary is-outlined is-inverted"
+            slot="trigger"
+            role="button">
+            <b-icon icon="format-color-fill"></b-icon>
+          </a>
+          <b-dropdown-item aria-role="menu-item" :focusable="false" custom paddingless>
+            <div class="modal-card" style="width:300px;margin-top: auto!important;">
+              <section class="modal-card-body">
+                <b-button v-for="color in colors" @click="setBackground(color)" color="is-light" rounded :style="`background-color: ${color}`" />
+              </section>
+            </div>
+          </b-dropdown-item>
+        </b-dropdown>
+      </b-navbar-item>
+      <b-navbar-item tag="div" style="padding-left: 0">
         <b-dropdown aria-role="list" position="is-bottom-left">
           <button class="button is-primary is-outlined is-inverted" slot="trigger" slot-scope="{ active }">
-              <b-icon icon="dots-horizontal"></b-icon>
+            <b-icon icon="dots-horizontal"></b-icon>
           </button>
           <b-dropdown-item @click="deleteBoard(board.id)" aria-role="listitem">Excluir</b-dropdown-item>
         </b-dropdown>
@@ -28,18 +45,33 @@
 
 <script>
 import Logo from './Logo'
+import { Color } from 'custom-electron-titlebar'
+
 export default {
   components: {
     Logo
   },
-  props: ['board'],
+  props: ['board', 'background'],
+  data () {
+    return {
+      colors: ['#0079bf', '#d29034', '#519839', '#b04632', '#89609e', '#cd5a91', '#4bbf6b', '#00aecc', '#838c91']
+    }
+  },
   methods: {
+    goDashboard () {
+      this.$router.push({ name: 'dashboard-page' })
+    },
     updateBoardTitle () {
       this.updateBoard()
       this.$buefy.toast.open({
         message: 'Título do quadro atualizado.',
         position: 'is-bottom-right'
       })
+    },
+    setBackground (color) {
+      this.background = color
+      this.board.color = color
+      this.updateBoard()
     },
     updateBoard () {
       const {title, color, featured, structure} = this.board
@@ -81,6 +113,15 @@ export default {
         }
       })
     }
+  },
+  computed: {
+    backgroundStyle () {
+      this.$global.titlebar.updateBackground(Color.fromHex(`${this.background}de`))
+      return `background: ${this.background}`
+    },
+    colorStyle () {
+      return `color: ${this.background}`
+    }
   }
 }
 </script>
@@ -119,5 +160,8 @@ export default {
       cursor: text;
       color: #000;
     }
+  }
+  .button.is-primary.is-inverted.is-outlined:hover, .button.is-primary.is-inverted.is-outlined.is-hovered, .button.is-primary.is-inverted.is-outlined:focus, .button.is-primary.is-inverted.is-outlined.is-focused {
+    color: #545454;
   }
 </style>

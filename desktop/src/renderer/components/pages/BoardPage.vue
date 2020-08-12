@@ -1,7 +1,7 @@
 <template>
   <div>
-    <navbar-board :board="board" />
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tenetur illo obcaecati mollitia recusandae blanditiis eum ratione odit iste laudantium hic eaque, voluptate eius laborum tempora. Eaque ut rerum harum saepe?</p>
+    <navbar-board :board="board" :background="board.color" />
+    <pre style="margin-top: 2rem">{{ board }}</pre>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
     return {
       id: {},
       board: {
-        color: '',
+        color: '#7957d5',
         featured: false,
         structure: '{}',
         title: '',
@@ -23,8 +23,8 @@ export default {
   created () {
     this.id = this.$route.params.id
     this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
-      console.log(board)
       this.board = board
+      this.board.color = board.color
     })
   },
   components: {

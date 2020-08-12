@@ -4,7 +4,7 @@
     <div class="container is-fluid pt-6">
       <ul class="columns is-variable is-3 ">
         <li v-for="(board, index) of boards" class="column is-one-quarter">
-          <a class="board-tile" @click="openBoard(board.id)">{{ board.title }}</a>
+          <a class="board-tile" @click="openBoard(board.id)" :style="`background: ${board.color}`">{{ board.title }}</a>
         </li>
         <li class="column is-one-quarter">
           <a class="board-tile add" @click="openModalAddBoard()">Criar novo quadro</a>
@@ -25,6 +25,7 @@ export default {
       boards.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
       this.$store.dispatch('SET_BOARDS', boards)
     })
+    this.$global.resetBackgroundColor()
   },
   methods: {
     openBoard (id) {
@@ -76,6 +77,9 @@ ul {
       border-radius: 3px;
       justify-content: center;
       align-items: center;
+      &:hover {
+        opacity: .7;
+      }
       &.add {
         background-color: rgba(9, 30, 66, 0.04);
         color: #172b4d;

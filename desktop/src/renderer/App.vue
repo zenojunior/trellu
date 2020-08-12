@@ -23,4 +23,10 @@
     top: 30px;
     + .container { margin-top: 3.25rem; }
   }
+  .window-title {
+    color: #fff
+  }
+  .titlebar.light .window-controls-container .window-icon {
+    background-color: #fff!important
+  }
 </style>
