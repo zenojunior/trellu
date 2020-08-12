@@ -1,5 +1,5 @@
 <template>
-  <b-navbar shadow type="is-primary" fixed-top :style="backgroundStyle">
+  <b-navbar type="is-primary" fixed-top :style="this.$global.backgroundStyle">
     <template slot="start">
       <input spellcheck="false" dir="auto" @focus="$event.target.select()" @change="updateBoardTitle()" v-model="board.title" class="board-title" type="text">
     </template>
@@ -45,13 +45,12 @@
 
 <script>
 import Logo from './Logo'
-import { Color } from 'custom-electron-titlebar'
 
 export default {
   components: {
     Logo
   },
-  props: ['board', 'background'],
+  props: ['board'],
   data () {
     return {
       colors: ['#0079bf', '#d29034', '#519839', '#b04632', '#89609e', '#cd5a91', '#4bbf6b', '#00aecc', '#838c91']
@@ -69,7 +68,7 @@ export default {
       })
     },
     setBackground (color) {
-      this.background = color
+      this.$global.background = color
       this.board.color = color
       this.updateBoard()
     },
@@ -113,20 +112,22 @@ export default {
         }
       })
     }
-  },
-  computed: {
-    backgroundStyle () {
-      this.$global.titlebar.updateBackground(Color.fromHex(`${this.background}de`))
-      return `background: ${this.background}`
-    },
-    colorStyle () {
-      return `color: ${this.background}`
-    }
   }
 }
 </script>
 
 <style lang="scss">
+  .navbar-menu > div {
+    z-index: 2;
+  }
+ .navbar-menu::after {
+  content: '';
+  background: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 .navbar-start {
   align-items: center;
   padding-left: 15px;
