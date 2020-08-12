@@ -4,13 +4,17 @@ class CreateUpdate {
 
   get rules() {
     return {
-      title: 'required',
-      color: 'required',
-      structure: 'required'
+      username: 'required|unique:users',
+      email: 'required|email|unique:users',
+      name: 'required'
     }
   }
 
   get data() {
+    const requestBody = this.ctx.request.all()
+    requestBody.email = (requestBody.email) ? requestBody.email.trim().toLowerCase() : null
+    requestBody.username = (requestBody.username) ? requestBody.username.trim().toLowerCase() : null
+    return requestBody
   }
 
   get sanitizationRules() {
@@ -23,9 +27,12 @@ class CreateUpdate {
 
   get messages() {
     return {
-      'title.required': 'Título é obrigatório',
-      'color.required': 'Cor é obrigatória',
-      'structure.required': 'Estrutura é obrigatória',
+      'username.required': 'Usuário é obrigatório',
+      'name.required': 'Nome é obrigatório',
+      'username.unique': 'Este usuário já está em uso',
+      'email.required': 'Endereço de email é obrigatório',
+      'email.email': 'Email inválido',
+      'email.unique': 'Email já está cadastrado',
     }
   }
 
