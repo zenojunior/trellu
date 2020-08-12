@@ -2,22 +2,24 @@
   <div>
     <navbar></navbar>
       <section class="user-header">
-          <img src="~@/assets/user.png" class="user-pick" alt="User picture">
-            <h2 class="user-name">{{user.name}}</h2>
+          <div class="user-avatar">
+          <img src="~@/assets/user.svg" alt="User picture">
+          </div>
+          <h2 class="user-name">{{user.name}}</h2>
       </section>
-    <div class="container ">
-        <section>
+    <div class="container">
+      <section>
         <b-tabs  position="is-centered" type="is-boxed">
             <b-tab-item label="Perfil">
                 <div class="form-user-content">
                 <b-field label="Nome">
-                    <b-input type="text" v-model="user.name" required></b-input>
+                  <b-input type="text" v-model="user.name" required></b-input>
                 </b-field>
                 <b-field label="Usuário">
-                    <b-input type="text" v-model="user.username" required></b-input>
+                  <b-input type="text" v-model="user.username" disabled></b-input>
                 </b-field>
                 <b-field label="E-mail">
-                    <b-input type="email" v-model="user.email" placeholder="exemplo@gmail.com" required></b-input>
+                  <b-input type="email" v-model="user.email" disabled placeholder="exemplo@gmail.com" required></b-input>
                 </b-field>
                 <button class="button is-primary" @click="update()" :disabled="loading">Salvar</button>
                 </div>
@@ -36,8 +38,7 @@
             <b-tab-item label="Atividades"></b-tab-item>
             <b-tab-item label="Configurações"></b-tab-item>
         </b-tabs>
-        </section>
-
+      </section>
     </div>
   </div>
 </template>
@@ -60,6 +61,14 @@ export default {
   methods: {
     update () {
       this.loading = true
+      this.$api.put('/api/user', this.user).then(res => res.data).then(data => {
+        localStorage.setItem('user', JSON.stringify(this.user))
+        this.$buefy.toast.open({
+          message: 'Dados do usuário foram atualizados.',
+          position: 'is-bottom-right'
+        })
+        this.loading = false
+      })
     },
     updatePassword () {
       this.loading = true
@@ -72,16 +81,26 @@ export default {
 .container {
     padding-top: 1rem;
 }
-.user-pick{
-    max-height: 8em;
-    margin-right: 2em;
-}
 .user-header{
     margin-top: 55px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3em;
+    flex-direction: column;
+    padding: 3rem 0 1rem 0;
+    .user-avatar {
+      background-color: #a0a0a0;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 15px;
+
+      img {
+        width: 80%;
+      }
+    }
 }
 .user-name{
     font-size: 2em;

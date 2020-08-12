@@ -3,10 +3,11 @@
 class CreateUpdate {
 
   get rules() {
+    // const { user } = this.ctx.request.post()
     return {
-      username: 'required|unique:users',
-      email: 'required|email|unique:users',
-      name: 'required'
+      // username: `required|unique:users,${user.id}`,
+      // email: `required|email|unique:users,${user.id}`,
+      name: `required`
     }
   }
 

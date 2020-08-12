@@ -17,11 +17,11 @@ class UserController {
   }
 
   async update({request, response, auth}) {
-    const {email, username, name} = request.all()
+    const {name} = request.all()
     const transition = await Database.beginTransaction()
     try {
       const user = await auth.getUser()
-      await Database.table('users').where('id', user.id).update({email, username, name})
+      await Database.table('users').where('id', user.id).update({name})
       await transition.commit()
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
