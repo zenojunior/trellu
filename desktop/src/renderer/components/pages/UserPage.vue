@@ -27,12 +27,12 @@
             <b-tab-item label="Senhas">
                 <div class="form-user-content">
                 <b-field label="Nova senha">
-                    <b-input  type="newPassword" password-reveal required></b-input>
+                    <b-input  type="password" v-model="newPassword" password-reveal required></b-input>
                 </b-field>
                     <b-field label="Senha atual">
-                        <b-input type="password" password-reveal required ></b-input>
+                        <b-input type="password" v-model="password" password-reveal required ></b-input>
                     </b-field>
-                    <button class="button is-primary" @click="updatePassword()" :disabled="loading">Salvar</button>
+                    <button class="button is-primary" @click="updatePassword()" :disabled="loadingPassword">Salvar</button>
                 </div>
             </b-tab-item>
             <b-tab-item label="Atividades"></b-tab-item>
@@ -49,7 +49,10 @@ export default {
   data () {
     return {
       user: {},
-      loading: false
+      loading: false,
+      loadingPassword: false,
+      password: null,
+      newPassword: null
     }
   },
   created () {
@@ -71,7 +74,16 @@ export default {
       })
     },
     updatePassword () {
-      this.loading = true
+      this.loadingPassword = true
+      this.$api.put('/api/user/password', {'password': this.password, 'newPassword': this.newPassword}).then(res => res.data).then(data => {
+        this.user.password = this.newPassword
+        localStorage.setItem('user', JSON.stringify(this.user))
+        this.$buefy.toast.open({
+          message: 'Senha atualizada.',
+          position: 'is-bottom-right'
+        })
+        this.loadingPassword = false
+      })
     }
   }
 }
