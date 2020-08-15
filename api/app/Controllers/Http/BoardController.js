@@ -27,12 +27,11 @@ class BoardController {
 
   async update({params, response, auth, request}) {
     try {
-      const {title, color, featured, structure} = request.all()
     let board = await Board.find(params.id)
-      board.title = title
-      board.color = color
-      board.featured = featured
-      board.structure = structure
+      if (request.input('title'))  board.title = request.input('title')
+      if (request.input('color'))  board.color = request.input('color')
+      if (request.input('featured'))  board.featured = request.input('featured')
+      if (request.input('structure'))  board.structure = request.input('structure')
       await board.save()
       return response.status(200).json(board);
     } catch (error) {

@@ -1,12 +1,12 @@
 'use strict'
 
-class CreateUpdate {
+class Create {
 
   get rules() {
     return {
       title: 'required',
-      color: 'required',
-      structure: 'required'
+      description: 'required',
+      board_id: 'required'
     }
   }
 
@@ -24,8 +24,8 @@ class CreateUpdate {
   get messages() {
     return {
       'title.required': 'Título é obrigatório',
-      'color.required': 'Cor é obrigatória',
-      'structure.required': 'Estrutura é obrigatória',
+      'description.required': 'Descrição é obrigatória',
+      'board_id.required': 'Board é obrigatória',
     }
   }
 
@@ -38,4 +38,4 @@ class CreateUpdate {
 
 }
 
-module.exports = CreateUpdate
+module.exports = Create

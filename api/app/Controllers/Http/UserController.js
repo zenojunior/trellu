@@ -6,16 +6,6 @@ const Database = use('Database')
 
 class UserController {
 
-  async edit({response, auth}) {
-    const user = await auth.getUser()
-    const data = {'name': user.name, 'email': user.email, 'username': user.username}
-    if (user) {
-      response.status(200).json(data)
-      return
-    }
-    response.status(401).json({message: 'Você deve fazer o login para ver o seu perfil'})
-  }
-
   async update({request, response, auth}) {
     const {name} = request.all()
     const transition = await Database.beginTransaction()
@@ -36,11 +26,10 @@ class UserController {
       const {password, newPassword} = request.all()
       const user = await auth.getUser()
       const passwordValid = await Hash.verify(password, user.password);
-
       if (!passwordValid) {
         return response.status(400).json({message: "As senhas não são compatíveis."})
       }
-      user.password = await Hash.make(newPassword)
+      user.password = newPassword
       const result = await user.save()
       return response.status(200).json({message: "Senha atualizada."}, result)
 
