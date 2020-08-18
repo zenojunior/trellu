@@ -6,8 +6,8 @@ class CardController {
 
   async cards({response, params, auth}) {
     try {
-      const cards = await Database.table('cards').where('board_id', params.bord_id)
-      if (await this.authorized(auth, card.board_id)) {
+      const cards = await Database.table('cards').where('board_id', params.board_id)
+      if (await this.authorized(auth, cards.board_id)) {
         return response.status(200).json(cards)
       }else{
         return response.status(401).json({message: 'Usuário não autorizado.'});
@@ -36,6 +36,8 @@ class CardController {
       if (await this.authorized(auth, card.board_id)) {
         if (request.input('title')) card.title = request.input('title')
         if (request.input('description')) card.color = request.input('description')
+        if (request.input('archived')) card.color = request.input('archived')
+        if (request.input('date'))  card.date = await this.formatDate(request.input('date'))
         await card.save()
         return response.status(200).json(card);
       } else {
@@ -77,6 +79,13 @@ class CardController {
     const user = await auth.getUser()
     board = await Database.table('boards').where('id', board).where('user_id', user.id)
     return (board.length !== 0)
+  }
+
+  async formatDate(dateTime){
+    dateTime = dateTime.split(" ")
+    let data = dateTime[0].split("/")
+    data = [data[2], data[1], data[0]].join('-')
+    return  [data, dateTime[1]].join(' ')
   }
 
 }
