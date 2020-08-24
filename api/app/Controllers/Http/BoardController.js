@@ -1,15 +1,18 @@
 'use strict'
 const Board = use('App/Models/Board')
 const Database = use('Database')
+const logger = use('App/Helpers/Logger')
+
 class BoardController {
 
   async boards({response, auth}) {
     try {
       const user = await auth.getUser()
-      const boards = await Database.table('boards').where('user_id', user.id)
+      const boards = await Board.query().where('user_id', user.id).with('lists.cards').fetch()
       return response.status(200).json(boards)
     } catch (error) {
-      return response.status(500).json({message: 'Erro na listagem de quadros.', error})
+      await logger('error','Erro na listagem de quadros', auth, error)
+      return response.status(500).json({message: 'Erro na listagem de quadros', error})
     }
   }
 
@@ -21,7 +24,8 @@ class BoardController {
       const board = await Board.create(data)
       return response.status(200).json(board);
     } catch (error) {
-      return response.status(500).json({message: 'Erro ao criar o quadro.', error})
+      await logger('error','Erro ao criar o quadro', auth, error)
+      return response.status(500).json({message: 'Erro ao criar o quadro', error})
     }
   }
 
@@ -35,25 +39,28 @@ class BoardController {
       await board.save()
       return response.status(200).json(board);
     } catch (error) {
-      return response.status(500).json({message: 'Erro ao atualizar o quadro.', error})
+      await logger('error','Erro ao atualizar o quadro', auth, error)
+      return response.status(500).json({message: 'Erro ao atualizar o quadro', error})
     }
   }
 
-  async board({response, params}) {
+  async board({response, auth, params}) {
     try {
-      const board = await Database.table('boards').where('id', params.id).first()
+      const board = await Board.query().where('id', params.id).with('lists.cards').first()
       return response.status(200).json(board)
     } catch (error) {
-      return response.status(500).json({message: 'Erro ao buscar o quadro.'})
+      await logger('error','Erro ao buscar o quadro', auth, error)
+      return response.status(500).json({message: 'Erro ao buscar o quadro', error})
     }
   }
 
-  async delete({params, response}) {
+  async delete({params, auth, response}) {
     try {
       let board = await Board.find(params.id)
       await board.delete()
       return response.status(200).json({message: 'Qauadro removido com sucesso.'})
     } catch (error) {
+      await logger('error','Erro ao excluir o quadro', auth, error)
       return response.status(500).json({message: 'Erro ao excluir o quadro.', error})
     }
   }

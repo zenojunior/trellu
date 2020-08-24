@@ -5,8 +5,8 @@ class Create {
   get rules() {
     return {
       title: 'required',
-      description: 'required',
-      list_id: 'required'
+      order: 'required',
+      board_id: 'required'
     }
   }
 
@@ -24,8 +24,8 @@ class Create {
   get messages() {
     return {
       'title.required': 'Título é obrigatório',
-      'description.required': 'Descrição é obrigatória',
-      'list_id.required': 'List é obrigatória',
+      'order.required': 'Ordem é obrigatória',
+      'board_id.required': 'Board é obrigatória',
     }
   }
 
