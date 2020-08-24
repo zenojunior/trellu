@@ -9,7 +9,6 @@ class CardsSchema extends Schema {
       table.increments()
       table.string('title', 120).notNullable()
       table.text('description', 120).notNullable()
-      table.integer('board_id').unsigned().references('id').inTable('boards')
       table.timestamps()
     })
   }

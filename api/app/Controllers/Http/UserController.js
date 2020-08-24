@@ -3,6 +3,7 @@
 const Hash = use('Hash')
 const User = use('App/Models/User')
 const Database = use('Database')
+const logger = use('App/Helpers/Logger')
 
 class UserController {
 
@@ -16,7 +17,8 @@ class UserController {
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
       await transition.rollback()
-      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.'})
+      await logger('error','Erro ao atualizar o usuário', auth, error)
+      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
     }
   }
 
@@ -34,17 +36,19 @@ class UserController {
       return response.status(200).json({message: "Senha atualizada."}, result)
 
     } catch (error) {
-      return response.status(500).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.',})
+      await logger('error','Erro ao atualizar o usuário', auth, error)
+      return response.status(500).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
 
     }
   }
 
-  async delete({request, response}) {
+  async delete({response, auth, params}) {
     try {
       let user = await User.find(params.id)
       await user.delete()
       return response.status(200).json({message: 'Usuário removido com sucesso.'})
     } catch (error) {
+      await logger('error','Erro ao excluir o usuário', auth, error)
       return response.status(500).json({message: 'Erro ao excluir o usuário.', error})
     }
   }

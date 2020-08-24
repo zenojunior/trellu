@@ -1,10 +1,10 @@
-const Logger = async (level, event, user_id = null, row_id= null, description = null) => {
+const Logger = async (level, event, auth, description = null) => {
+  const user = (auth === null) ? null : (await auth.getUser()).id
   const Log = use('App/Models/Log')
   const log = new Log()
   log.level = level.toUpperCase()
   log.event = event.toUpperCase()
-  log.row_id = row_id
-  log.user_id = user_id
+  log.user_id = user
   log.description = ((typeof description === "object") && (description !== null) ) ? JSON.stringify(description) : description
   await log.save()
   return log;
