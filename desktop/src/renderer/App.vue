@@ -15,6 +15,12 @@
   $primary: #5E2B97;
 
   * { user-select: none; }
+  ._horizontal-scroll {
+    width: 100%;
+  }
+  .smooth-dnd-container.horizontal {
+    height: 100%;
+  }
   .modal-card {
     max-height: calc(100vh - 60px);
     margin-top: 30px!important;

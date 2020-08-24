@@ -7,7 +7,6 @@
         orientation="horizontal"
         @drop="onColumnDrop($event)"
         drag-handle-selector=".column-drag-handle"
-        @drag-start="() => console.log('Drag start')"
         :drop-placeholder="upperDropPlaceholderOptions"
       >
         <Draggable v-for="column in listBoard" :key="column.id">
@@ -19,8 +18,8 @@
             <Container
               group-name="col"
               @drop="(e) => onCardDrop(column.id, e)"
-              @drag-start="(e) => log('drag start', e)"
-              @drag-end="(e) => log('drag end', e)"
+              @drag-start="(e) => draggingCard = true"
+              @drag-end="(e) => draggingCard = false"
               :get-child-payload="getCardPayload(column.id)"
               drag-class="card-ghost"
               drop-class="card-ghost-drop"
@@ -28,13 +27,13 @@
               :style="`max-height: ${listHeight }px`"
             >
               <Draggable v-for="(card, index) in column.children" :key="card.id">
-                <div class="card" :style="{backgroundColor: '#fff'}">
+                <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
                   <p>{{ card.title }}</p>
                 </div>
               </Draggable>
             </Container>
             <div class="card-column-footer">
-              <b-button @click="openAddCardToggle(column.id)" icon-left="plus" expanded text type="is-light">
+              <b-button @click="addCard(column.id)" icon-left="plus" expanded text type="is-light">
                 Adicionar outro quadro
               </b-button>
             </div>
@@ -55,6 +54,7 @@ import { applyDrag, generateItems } from '../../utils/helpers'
 import HorizontalScroll from 'vue-horizontal-scroll'
 import 'vue-horizontal-scroll/dist/vue-horizontal-scroll.css'
 import NavbarBoard from '../NavbarBoard'
+import ModalCard from '../modals/ModalCard'
 
 const scene = {
   type: 'container',
@@ -69,10 +69,6 @@ const scene = {
       props: {
         orientation: 'vertical',
         className: 'card-container'
-      },
-      newCard: {
-        visible: false,
-        title: ''
       },
       children: [
         {
@@ -92,12 +88,11 @@ export default {
       board: {
         color: '#7957d5',
         featured: false,
-        structure: '{}',
+        lists: [],
         title: '',
         user_id: null
       },
-      cards: [],
-      cardsByList: [],
+      card: {},
       listHeight: 0,
       window: {
         width: 0,
@@ -128,38 +123,18 @@ export default {
       this.board.color = board.color
       this.board.title = board.title
       this.board.user_id = board.user_id
-      // console.groupCollapsed('board')
-      // console.log(board)
-      // console.groupEnd('board')
+      this.board.lists = board.lists
       this.$global.background = this.board.color = board.color
-      this.$api.get(`/api/cards/board/${board.id}`).then(res => res.data).then(cards => {
-        // console.groupCollapsed('cards')
-        // console.log(cards)
-        // console.groupEnd('cards')
-        this.cards = cards
-        console.log('board.structure', board.structure)
-        this.board.structure = board.structure
-      })
     })
   },
   computed: {
     listBoard () {
-      const structure = this.board.structure
-      if (typeof structure !== 'object') return []
-      const cardsByList = this.separateCardsByList(structure)
-      let lists = generateItems(structure.length, listIndex => {
-        let list = structure[listIndex]
-        let getCards = () => {
-          let l = cardsByList.find(l => l.title === list.title)
-          return l && l.cards ? l.cards : []
-        }
-        let cards = getCards()
-        console.log('cards', cards)
-        console.log('cards.length', cards.length)
+      let lists = generateItems(this.board.lists.length, listIndex => {
+        let list = this.board.lists[listIndex]
+        let cards = list.cards
         return {
-          id: `list${listIndex}`,
+          id: listIndex + 1,
           type: 'container',
-          newCard: { visible: false, title: '' },
           title: list.title,
           props: {
             orientation: 'vertical',
@@ -175,26 +150,35 @@ export default {
           })
         }
       })
-      // console.groupCollapsed('listBoard computed')
-      // console.log(lists)
-      // console.groupEnd('listBoard computed')
       this.scene.children = lists
       return lists
     }
   },
   methods: {
-    separateCardsByList (lists) {
-      if (!lists.length) return []
-      lists.forEach(list => {
-        let cardIds = [...list.cards]
-        list.cards = cardIds.map(cardId => this.cards.find(c => c.id === cardId))
+    openCard (card) {
+      this.$buefy.modal.open({
+        parent: this,
+        component: ModalCard,
+        hasModalCard: true,
+        customClass: 'modal-card-board',
+        trapFocus: true,
+        events: {
+          'deleteCard': cardId => this.deleteCard(cardId)
+        },
+        props: {
+          card
+        }
       })
-      return lists
     },
-    openAddCardToggle (columnId = null) {
-      // this.scene.children.forEach((list, index) => {
-      //   list.newCard.visible = list.id === columnId
-      // })
+    deleteCard (cardId) {
+      let list = this.board.lists.find(list => list.cards.find(card => card.id === cardId))
+      let listIndex = this.board.lists.indexOf(list)
+      let card = list.cards.find(card => card.id === cardId)
+      let cardIndex = list.cards.indexOf(card)
+      list.cards.splice(cardIndex, 1)
+      this.$set(this.board.lists[listIndex], 'cards', list.cards)
+    },
+    addCard (columnId = null) {
       this.$buefy.dialog.prompt({
         hasIcon: true,
         icon: 'card-plus',
@@ -207,16 +191,17 @@ export default {
           maxlength: 25
         },
         trapFocus: true,
-        onConfirm: (name) => {
-          console.log('nome')
+        onConfirm: (title) => {
+          this.$api.post('/api/cards', {
+            title,
+            list_id: columnId,
+            description: 'teste'
+          }).then(res => res.data).then(card => {
+            let list = this.board.lists.find(list => list.id === columnId)
+            let listIndex = this.board.lists.indexOf(list)
+            this.$set(this.board.lists[listIndex], 'cards', [...list.cards, card])
+          })
         }
-      })
-    },
-    addCard (title) {
-      this.$api.post('/api/cards', {
-        title: title,
-        description: '',
-        board_id: this.board.id
       })
     },
     addList (name) {
@@ -232,7 +217,7 @@ export default {
           maxlength: 15
         },
         trapFocus: true,
-        onConfirm: (name) => {
+        onConfirm: (title) => {
           const list = {
             id: Math.random().toString(36).substring(7),
             name,
@@ -241,31 +226,15 @@ export default {
               orientation: 'vertical',
               className: 'card-container'
             },
-            newCard: {
-              visible: false,
-              title: ''
-            },
             children: []
           }
-          this.updateStructure()
+          this.$api.post(`api/lists`, {
+            board_id: 1,
+            title,
+            order: this.board.lists.length + 1
+          })
           this.scene.children.push(list)
         }
-      })
-    },
-    updateStructure () {
-      console.log(this.board)
-      const lists = [
-        {
-          title: 'Teste',
-          cards: []
-        },
-        {
-          title: 'teste',
-          cards: [1]
-        }
-      ]
-      this.$api.put(`api/boards/${this.board.id}`, {
-        structure: JSON.stringify(lists)
       })
     },
     handleResize () {
@@ -280,6 +249,8 @@ export default {
     },
     onCardDrop (columnId, dropResult) {
       if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+        console.log('columnId', columnId)
+        console.log('dropResult', dropResult)
         const scene = Object.assign({}, this.scene)
         const column = scene.children.filter(p => p.id === columnId)[0]
         const columnIndex = scene.children.indexOf(column)
@@ -294,6 +265,9 @@ export default {
       return index => {
         return this.scene.children.filter(p => p.id === columnId)[0].children[index]
       }
+    },
+    log (...params) {
+      console.log(...params)
     }
   },
   destroyed () {
@@ -373,10 +347,10 @@ export default {
 
 .card {
   margin: 5px;
-  /* border: 1px solid #ccc */
   background-color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
   padding: 10px;
+  cursor: pointer;
   &[data-type="new"] {
     background-color: transparent;
     margin-top: 80px;
