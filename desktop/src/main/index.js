@@ -27,6 +27,7 @@ function createWindow () {
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
+      blinkFeatures: 'OverlayScrollbars',
       nodeIntegration: true,
       webSecurity: false
     }
