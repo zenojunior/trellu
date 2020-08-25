@@ -9,8 +9,8 @@ class ListsSchema extends Schema {
       table.increments()
       table.string('title', 120).notNullable()
       table.integer('order', 2).notNullable()
-      table.integer('list_id').unsigned().references('id').inTable('lists')
       table.integer('board_id').unsigned().references('id').inTable('boards')
+      table.boolean('archived').default(0)
       table.timestamps()
     })
   }

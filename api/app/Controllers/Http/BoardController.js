@@ -8,7 +8,11 @@ class BoardController {
   async boards({response, auth}) {
     try {
       const user = await auth.getUser()
-      const boards = await Board.query().where('user_id', user.id).with('lists.cards').fetch()
+      const boards = await Board.query().where('user_id', user.id).with('lists', (builder) => {
+        builder.orderBy('lists.order').where('lists.archived', 0).with('cards', (builder) => {
+          builder.where('cards.archived', 0)
+        })
+      }).fetch()
       return response.status(200).json(boards)
     } catch (error) {
       await logger('error','Erro na listagem de quadros', auth, error)
@@ -46,7 +50,11 @@ class BoardController {
 
   async board({response, auth, params}) {
     try {
-      const board = await Board.query().where('id', params.id).with('lists.cards').first()
+      const board = await Board.query().where('id', params.id).with('lists', (builder) => {
+        builder.orderBy('lists.order').where('lists.archived', 0).with('cards', (builder) => {
+          builder.where('cards.archived', 0)
+        })
+      }).first()
       return response.status(200).json(board)
     } catch (error) {
       await logger('error','Erro ao buscar o quadro', auth, error)

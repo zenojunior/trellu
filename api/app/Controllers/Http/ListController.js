@@ -43,6 +43,7 @@ class ListController {
       if (await this.authorized(auth, list.board_id)) {
         if (request.input('title')) list.title = request.input('title')
         if (request.input('order')) list.title = request.input('order')
+        if (request.input('archived')) list.title = request.input('archived')
         await list.save()
         return response.status(200).json(list);
       } else {
@@ -69,6 +70,16 @@ class ListController {
       return response.status(500).json({message: 'Erro ao buscar a lista.'})
     }
   }
+
+  // async ordenate({request, auth, response}){
+  //   try{
+  //     console.log(JSON.parse(request.input('structure')));
+  //   }catch (error) {
+  //     await logger('error', 'Erro ao atualizar ordenação das listas e cartões', auth, error)
+  //     return response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'})
+  //
+  //   }
+  // }
 
   async delete({params, auth, response}) {
     try {
