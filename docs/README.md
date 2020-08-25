@@ -9,28 +9,28 @@
   <img src="https://img.shields.io/badge/Sprint-1/6-brightgreen.svg?style=flat">
 </p>
 
-## Links
+### Links
 
 - [API](http://trellu-app.herokuapp.com/)
 - [Download](http://trellu-download.herokuapp.com/)
 - [Documentação](https://zenojunior.github.io/trellu)
 
-## Funcionalidades
+### Funcionalidades
 
 - [x] Autenticação de usuários
 - [x] Builds para Linux e Windows 10
 - [x] Quadros
-- [ ] Listas
-- [ ] Cards
+- [x] Listas
+- [x] Cards
 - [ ] Etiquetas nos cards
 - [ ] Checklist nos cards
 - [ ] Funciona em tempo real
 
-## Propósito
+### Propósito
 Essa aplicação desktop é um projeto para a disciplina de **Projeto Integrador I** do curso Engenharia de Software pela Universidade do Vale do Taquari. Nessa disciplina precisamos desenvolver um app desktop e nossa ideia era desenvolver um gerenciador de tarefas kanban que pudesse facilitar a vida das pessoas.
 
 Sim, nos inspiramos no [Trello](https://trello.com).
 
-## Contribuidores
+### Contribuidores
 - [Zeno Junior](https://github.com/zenojunior)
 - [Cristine Scheibler](https://github.com/cris-scheib)
