@@ -1,36 +1,56 @@
 'use strict'
 
+const Hash = use('Hash')
 const User = use('App/Models/User')
 const Database = use('Database')
+const logger = use('App/Helpers/Logger')
 
 class UserController {
 
-  async edit({response, auth}) {
-    const user = await auth.getUser()
-    const data = {'name': user.name, 'email': user.email, 'username': user.username}
-    if (user) {
-      response.status(200).json(data)
-      return
-    }
-    response.status(401).json({message: 'Você deve fazer o login para ver o seu perfil'})
-  }
-
   async update({request, response, auth}) {
-    const {email, username, name} = request.all()
+    const {name} = request.all()
     const transition = await Database.beginTransaction()
     try {
       const user = await auth.getUser()
-      await Database.table('users').where('id', user.id).update({email, username, name})
+      await Database.table('users').where('id', user.id).update({name})
       await transition.commit()
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
       await transition.rollback()
-      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.'})
+      await logger('error','Erro ao atualizar o usuário', auth, error)
+      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
     }
   }
 
-  async delete({request, response}) {
+  async updatePassword({request, response, auth}) {
 
+    try {
+      const {password, newPassword} = request.all()
+      const user = await auth.getUser()
+      const passwordValid = await Hash.verify(password, user.password);
+      if (!passwordValid) {
+        return response.status(400).json({message: "As senhas não são compatíveis."})
+      }
+      user.password = newPassword
+      const result = await user.save()
+      return response.status(200).json({message: "Senha atualizada."}, result)
+
+    } catch (error) {
+      await logger('error','Erro ao atualizar o usuário', auth, error)
+      return response.status(500).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
+
+    }
+  }
+
+  async delete({response, auth, params}) {
+    try {
+      let user = await User.find(params.id)
+      await user.delete()
+      return response.status(200).json({message: 'Usuário removido com sucesso.'})
+    } catch (error) {
+      await logger('error','Erro ao excluir o usuário', auth, error)
+      return response.status(500).json({message: 'Erro ao excluir o usuário.', error})
+    }
   }
 
   async redirect({ally}) {
