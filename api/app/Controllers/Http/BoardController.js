@@ -12,7 +12,7 @@ class BoardController {
       const user = await auth.getUser()
       const boards = await Board.query().where('user_id', user.id).with('lists', (builder) => {
         builder.orderBy('lists.order').where('lists.archived', 0).with('cards', (builder) => {
-          builder.where('cards.archived', 0)
+          builder.where('cards.archived', 0).orderBy('cards.order')
         })
       }).fetch()
       return response.status(200).json(boards)
@@ -55,7 +55,7 @@ class BoardController {
     try {
       const board = await Board.query().where('id', params.id).with('lists', (builder) => {
         builder.orderBy('lists.order').where('lists.archived', 0).with('cards', (builder) => {
-          builder.where('cards.archived', 0)
+          builder.where('cards.archived', 0).orderBy('cards.order')
         })
       }).first()
       return response.status(200).json(board)
@@ -95,6 +95,7 @@ class BoardController {
         for (let [cardIndex, cardValue] of listValue.cards.entries()) {
           let card = await Card.find(cardValue)
           card.order = cardIndex + 1
+          card.list_id = list.id
           card.save();
         }
       }
