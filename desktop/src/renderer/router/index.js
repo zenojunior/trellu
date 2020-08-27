@@ -22,6 +22,14 @@ let router = new Router({
       }
     },
     {
+      path: '/board/:id',
+      name: 'board-page',
+      component: require('@/components/pages/BoardPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/user',
       name: 'user-page',
       component: require('@/components/pages/UserPage').default,

@@ -4,11 +4,10 @@
 const Model = use('Model')
 
 
-class Board extends Model {
-
-  lists() {
-    return this.hasMany('App/Models/List')
+class List extends Model {
+  cards() {
+    return this.hasMany('App/Models/Card')
   }
 }
 
-module.exports = Board
+module.exports = List
