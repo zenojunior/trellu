@@ -9,31 +9,43 @@
         drag-handle-selector=".column-drag-handle"
         :drop-placeholder="upperDropPlaceholderOptions"
       >
-        <Draggable v-for="column in listBoard" :key="column.id">
+        <Draggable v-for="list in listBoard" :key="list.id">
           <div class="card-container">
             <div class="card-column-header">
               <span class="column-drag-handle">&#x2630;</span>
-              {{ column.title }}
+              {{ list.title }}
+              <b-dropdown aria-role="list" position="is-bottom-left" style="float: right;margin-right: 5px;">
+                <b-button type="is-light" size="is-small" slot="trigger" slot-scope="{ active }">
+                  <b-icon icon="dots-horizontal"></b-icon>
+                </b-button>
+                <b-dropdown-item custom aria-role="menuitem" class="list-menu">
+                  <b-menu>
+                    <b-menu-list label="Ações da lista">
+                      <b-menu-item icon="archive" label="Arquivar"></b-menu-item>
+                    </b-menu-list>
+                  </b-menu>
+                </b-dropdown-item>
+              </b-dropdown>
             </div>
             <Container
               group-name="col"
-              @drop="(e) => onCardDrop(column.id, e)"
+              @drop="(e) => onCardDrop(list.id, e)"
               @drag-start="(e) => draggingCard = true"
               @drag-end="(e) => draggingCard = false"
-              :get-child-payload="getCardPayload(column.id)"
+              :get-child-payload="getCardPayload(list.id)"
               drag-class="card-ghost"
               drop-class="card-ghost-drop"
               :drop-placeholder="dropPlaceholderOptions"
               :style="`max-height: ${listHeight }px`"
             >
-              <Draggable v-for="(card, index) in column.children" :key="card.id">
+              <Draggable v-for="(card, index) in list.children" :key="card.id">
                 <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
                   <p>{{ card.title }}</p>
                 </div>
               </Draggable>
             </Container>
             <div class="card-column-footer">
-              <b-button @click="addCard(column.id)" icon-left="plus" expanded text type="is-light">
+              <b-button @click="addCard(list.id)" icon-left="plus" expanded text type="is-light">
                 Adicionar outro quadro
               </b-button>
             </div>
@@ -84,7 +96,7 @@ export default {
   components: { Container, Draggable, NavbarBoard, HorizontalScroll },
   data () {
     return {
-      id: {},
+      id: null,
       board: {
         color: '#7957d5',
         featured: false,
@@ -111,6 +123,16 @@ export default {
       }
     }
   },
+  watch: {
+    'board.lists': function (newlists, oldLists) {
+      if (newlists === oldLists) return
+      if (JSON.stringify(oldLists) === '[]') return
+      let lists = JSON.parse(JSON.stringify(newlists))
+      for (let list of lists) list.cards = list.cards.map(card => card.id)
+      lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
+      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists})
+    }
+  },
   created () {
     window.addEventListener('resize', this.handleResize)
     document.body.classList.add('board')
@@ -133,7 +155,7 @@ export default {
         let list = this.board.lists[listIndex]
         let cards = list.cards
         return {
-          id: listIndex + 1,
+          id: list.id,
           type: 'container',
           title: list.title,
           props: {
@@ -145,6 +167,7 @@ export default {
             return {
               id: card.id,
               title: card.title,
+              description: card.description,
               type: 'draggable'
             }
           })
@@ -178,7 +201,7 @@ export default {
       list.cards.splice(cardIndex, 1)
       this.$set(this.board.lists[listIndex], 'cards', list.cards)
     },
-    addCard (columnId = null) {
+    addCard (listId) {
       this.$buefy.dialog.prompt({
         hasIcon: true,
         icon: 'card-plus',
@@ -194,12 +217,13 @@ export default {
         onConfirm: (title) => {
           this.$api.post('/api/cards', {
             title,
-            list_id: columnId,
+            list_id: listId,
             description: 'teste'
           }).then(res => res.data).then(card => {
-            let list = this.board.lists.find(list => list.id === columnId)
+            let list = this.board.lists.find(list => list.id === listId)
             let listIndex = this.board.lists.indexOf(list)
-            this.$set(this.board.lists[listIndex], 'cards', [...list.cards, card])
+            let cards = list && list.cards ? list.cards : []
+            this.$set(this.board.lists[listIndex], 'cards', Array.concat(cards, card))
           })
         }
       })
@@ -229,9 +253,13 @@ export default {
             children: []
           }
           this.$api.post(`api/lists`, {
-            board_id: 1,
+            board_id: this.id,
             title,
             order: this.board.lists.length + 1
+          }).then(res => res.data).then(list => {
+            list['cards'] = []
+            let lists = this.board.lists
+            this.$set(this.board, 'lists', [...lists, list])
           })
           this.scene.children.push(list)
         }
@@ -243,22 +271,19 @@ export default {
       this.listHeight = window.innerHeight - 205
     },
     onColumnDrop (dropResult) {
-      const scene = Object.assign({}, this.scene)
-      scene.children = applyDrag(scene.children, dropResult)
-      this.scene = scene
+      const board = Object.assign({}, this.board)
+      board.lists = applyDrag(board.lists, dropResult)
+      this.board = board
     },
-    onCardDrop (columnId, dropResult) {
+    onCardDrop (listId, dropResult) {
       if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-        console.log('columnId', columnId)
-        console.log('dropResult', dropResult)
-        const scene = Object.assign({}, this.scene)
-        const column = scene.children.filter(p => p.id === columnId)[0]
-        const columnIndex = scene.children.indexOf(column)
-        const newColumn = Object.assign({}, column)
-        newColumn.children = applyDrag(newColumn.children, dropResult)
-        scene.children.splice(columnIndex, 1, newColumn)
-        console.log(scene)
-        this.scene = scene
+        const lists = [...this.board.lists]
+        const list = lists.find(list => list.id === listId)
+        const listIndex = lists.indexOf(list)
+        const newList = Object.assign({}, list)
+        newList.cards = applyDrag(newList.cards, dropResult)
+        lists.splice(listIndex, 1, newList)
+        this.board.lists = lists
       }
     },
     getCardPayload (columnId) {
@@ -287,6 +312,10 @@ export default {
   }
 </style>
 <style lang="scss">
+.list-menu {
+  padding-right: 10px;
+  padding-left: 10px;
+}
 .board-modals {
   .modal-background {
     background-color: transparent;
@@ -351,6 +380,9 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
   padding: 10px;
   cursor: pointer;
+  &:hover {
+    opacity: .7;
+  }
   &[data-type="new"] {
     background-color: transparent;
     margin-top: 80px;

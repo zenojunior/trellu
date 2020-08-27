@@ -25,7 +25,7 @@ api.interceptors.response.use(
         router.replace({path: '/'})
         break
       case 'HttpException':
-        api.get('api/auth/logout')
+        // api.get('api/auth/logout')
         break
       default:
         break

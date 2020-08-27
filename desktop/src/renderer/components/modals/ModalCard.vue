@@ -4,7 +4,7 @@
       <p class="modal-card-title">
         <b-icon icon="card" type="is-primary" />
         <b-field class="card-title">
-            <b-input size="is-medium" v-model="card.title"></b-input>
+            <b-input size="is-medium" v-model="card.title" @input="updateTitle"></b-input>
         </b-field>
       </p>
       <button
@@ -12,24 +12,35 @@
         class="delete"
         @click="$emit('close')"/>
     </header>
-    <section class="modal-card-body">
-      <p class="modal-title">
-        <b-icon icon="text" type="is-primary" />
-        <span>Descrição</span>
-      </p>
-      <b-field class="card-description">
-        <b-input type="textarea"
-              minlength="10"
-              maxlength="100"
-              v-model="card.description"
-              placeholder="Adicione uma descrição mais detalhada...">
-          </b-input>
-      </b-field>
+    <section class="modal-card-body columns">
+      <main class="column is-three-quarters">
+        <p class="modal-title">
+          <b-icon icon="text" type="is-primary" />
+          <span>Descrição</span>
+        </p>
+        <b-field class="card-description">
+          <b-input type="textarea"
+                minlength="10"
+                maxlength="100"
+                @input="updateDescription"
+                v-model="card.description"
+                placeholder="Adicione uma descrição mais detalhada...">
+            </b-input>
+        </b-field>
+      </main>
+      <aside class="column">
+        <small class="aside-title">AÇÕES</small>
+        <b-button type="is-primary" outlined iconLeft="arrow-right" expanded disabled>
+          Mover
+        </b-button>
+        <b-button type="is-primary" outlined iconLeft="trash-can" expanded @click="deleteCard()">
+          Excluir
+        </b-button>
+        <b-button type="is-primary" outlined iconLeft="archive" expanded disabled>
+          Arquivar
+        </b-button>
+      </aside>
     </section>
-    <footer class="modal-card-foot">
-      <button class="button" type="button" @click="deleteCard()">Excluir</button>
-      <button class="button is-primary">Salvar</button>
-    </footer>
   </div>
 </template>
 
@@ -44,6 +55,12 @@ export default {
   created () {
   },
   methods: {
+    updateTitle (title) {
+      this.$api.put(`api/cards/${this.card.id}`, { title })
+    },
+    updateDescription (description) {
+      this.$api.put(`api/cards/${this.card.id}`, { description })
+    },
     deleteCard () {
       this.$buefy.dialog.confirm({
         message: 'Deseja excluir o cartão?',
@@ -100,6 +117,18 @@ export default {
     &-head {
       padding-bottom: 5px;
       padding-top: 15px;
+    }
+  }
+  aside {
+    .aside-title {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 600;
+      color: #6943d0;
+    }
+    .button {
+      margin-bottom: 7px;
+      justify-content: flex-start;
     }
   }
 </style>

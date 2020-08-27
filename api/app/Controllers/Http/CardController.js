@@ -26,7 +26,7 @@ class CardController {
       let card = await Card.find(params.id)
       if (await this.authorized(auth, card.list_id)) {
         if (request.input('title')) card.title = request.input('title')
-        if (request.input('description')) card.color = request.input('description')
+        if (request.input('description')) card.description = request.input('description')
         if (request.input('archived')) card.color = request.input('archived')
         if (request.input('date')) card.date = await this.formatDate(request.input('date'))
         await card.save()
