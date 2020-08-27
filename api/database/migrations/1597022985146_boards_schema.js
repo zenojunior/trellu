@@ -10,6 +10,7 @@ class BoardsSchema extends Schema {
       table.string('title', 120).notNullable()
       table.string('color', 60).notNullable()
       table.boolean('featured').notNullable().default(0)
+      table.boolean('archived').default(0)
       table.jsonb('structure', 120).notNullable()
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.timestamps()

@@ -1,6 +1,7 @@
 'use strict'
 const List = use('App/Models/List')
 const Board = use('App/Models/Board')
+const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 
@@ -71,32 +72,22 @@ class ListController {
     }
   }
 
-  // async ordenate({request, auth, response}){
-  //   try{
-  //     console.log(JSON.parse(request.input('structure')));
-  //   }catch (error) {
-  //     await logger('error', 'Erro ao atualizar ordenação das listas e cartões', auth, error)
-  //     return response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'})
-  //
-  //   }
-  // }
 
   async delete({params, auth, response}) {
+    const transition = await Database.beginTransaction()
     try {
       let list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
-        const cards = Database.table('cards').where('list_id', params.id).get()
-        if (cards.length !== 0) {
-          await logger('warning', 'Bloqueio na remoção de listas com cartões vinculados', auth)
-          return response.status(401).json({message: 'Lista com cartes vinculados no podem ser excluidos.'});
-        }
+        await Card.query().where('list_id', params.id).delete()
         await list.delete()
+        await transition.commit()
         return response.status(200).json({message: 'Lista removida com sucesso.'})
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
         return response.status(401).json({message: 'Usuário não autorizado.'});
       }
     } catch (error) {
+      await transition.rollback()
       await logger('error', 'Erro ao excluir o cartão', auth, error)
       return response.status(500).json({message: 'Erro ao excluir o cartão.', error})
     }
