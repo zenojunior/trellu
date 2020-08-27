@@ -42,7 +42,6 @@ class BoardController {
       if (request.input('color')) board.color = request.input('color')
       if (request.input('archived')) board.title = request.input('archived')
       if (request.input('featured')) board.featured = request.input('featured')
-      if (request.input('structure')) board.structure = request.input('structure')
       await board.save()
       return response.status(200).json(board);
     } catch (error) {

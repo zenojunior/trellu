@@ -16,7 +16,6 @@
 
 <script>
 import Navbar from '../Navbar'
-import ModalAddBoard from '../modals/ModalAddBoard'
 import { mapState } from 'vuex'
 
 export default {
@@ -32,12 +31,23 @@ export default {
       this.$router.push({ name: 'board-page', params: {id} })
     },
     openModalAddBoard () {
-      this.$buefy.modal.open({
-        parent: this,
-        component: ModalAddBoard,
-        hasModalCard: true,
-        customClass: 'modal-add-board',
-        trapFocus: true
+      this.$buefy.dialog.prompt({
+        hasIcon: true,
+        icon: 'clipboard-plus',
+        confirmText: 'Criar',
+        cancelText: 'Cancelar',
+        container: '.board-modals',
+        message: `Qual o nome do quadro?`,
+        inputAttrs: {
+          placeholder: 'Nome',
+          maxlength: 15
+        },
+        trapFocus: true,
+        onConfirm: (title) => {
+          this.$api.post('/api/boards', {title, color: '#7957d5'}).then(res => {
+            this.$store.dispatch('ADD_BOARD', res.data)
+          })
+        }
       })
     }
   },
@@ -47,8 +57,7 @@ export default {
     })
   },
   components: {
-    Navbar,
-    ModalAddBoard
+    Navbar
   }
 }
 </script>

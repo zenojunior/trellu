@@ -43,8 +43,8 @@ class ListController {
       let list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
         if (request.input('title')) list.title = request.input('title')
-        if (request.input('order')) list.title = request.input('order')
-        if (request.input('archived')) list.title = request.input('archived')
+        if (request.input('order')) list.order = request.input('order')
+        if (request.input('archived')) list.archived = request.input('archived')
         await list.save()
         return response.status(200).json(list);
       } else {

@@ -5,8 +5,7 @@ class Create {
   get rules() {
     return {
       title: 'required',
-      color: 'required',
-      structure: 'required'
+      color: 'required'
     }
   }
 
@@ -24,8 +23,7 @@ class Create {
   get messages() {
     return {
       'title.required': 'Título é obrigatório',
-      'color.required': 'Cor é obrigatória',
-      'structure.required': 'Estrutura é obrigatória',
+      'color.required': 'Cor é obrigatória'
     }
   }
 

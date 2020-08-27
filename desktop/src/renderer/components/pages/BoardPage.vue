@@ -21,7 +21,7 @@
                 <b-dropdown-item custom aria-role="menuitem" class="list-menu">
                   <b-menu>
                     <b-menu-list label="Ações da lista">
-                      <b-menu-item icon="archive" label="Arquivar"></b-menu-item>
+                      <b-menu-item @click="archiveList(list.id)" icon="archive" label="Arquivar"></b-menu-item>
                     </b-menu-list>
                   </b-menu>
                 </b-dropdown-item>
@@ -264,6 +264,17 @@ export default {
           this.scene.children.push(list)
         }
       })
+    },
+    archiveList (listId) {
+      this.$api.put(`/api/lists/${listId}`, {archived: true}).then(res => res.data).then(console.log)
+      let list = this.board.lists.find(list => list.id === listId)
+      let totalCards = list.cards.length
+      let listIndex = this.board.lists.indexOf(list)
+      this.board.lists.splice(listIndex, 1)
+      let message = ''
+      if (!totalCards) message = 'Lista arquivada'
+      else message = `Lista e ${totalCards} ${totalCards > 1 ? 'cartões' : 'cartão'} foram arquivados`
+      this.$buefy.toast.open({ message, position: 'is-bottom-right' })
     },
     handleResize () {
       this.window.height = window.innerHeight
