@@ -9,7 +9,7 @@ class CardsSchema extends Schema {
       table.increments()
       table.string('title', 120).notNullable()
       table.text('description', 120).notNullable()
-      table.integer('order', 2).notNullable()
+      table.integer('order', 2).nullable()
       table.integer('list_id').unsigned().references('id').inTable('lists')
       table.boolean('archived').default(0)
       table.dateTime('date').nullable()
