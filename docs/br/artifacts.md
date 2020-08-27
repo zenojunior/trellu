@@ -14,8 +14,8 @@ Data | Atualização
 
 ## Diagrama de classes
 
-<img src="/_media/class.jpg">
+<img src="_media/class.jpg">
 
 ## Casos de uso
 
-<img src="/_media/use-case.png">
+<img src="_media/use-case.png">
