@@ -2,7 +2,7 @@
 
 ## Geral
 
-<img src="/_media/overview.png">
+<img src="_media/overview.png">
 
 
 #### App

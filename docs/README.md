@@ -9,11 +9,18 @@
   <img src="https://img.shields.io/badge/Sprint-1/6-brightgreen.svg?style=flat">
 </p>
 
+<p align="center">
+  <img src="https://zenojunior.github.io/trellu/_media/trellu-example.gif" width="60%">
+</p>
+
+----------------------------
+
 ### Links
 
 - [API](http://trellu-app.herokuapp.com/)
 - [Download](http://trellu-download.herokuapp.com/)
 - [Documentação](https://zenojunior.github.io/trellu)
+
 
 ### Funcionalidades
 
