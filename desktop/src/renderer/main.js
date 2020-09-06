@@ -5,6 +5,7 @@ import Buefy from 'buefy'
 import App from './App'
 import router from './router'
 import store from './store'
+import VueSocketIO from 'vue-socket.io'
 
 import state from './global'
 Vue.prototype.$global = state
@@ -38,6 +39,16 @@ Vue.config.productionTip = false
 Vue.use(Buefy, {
   defaultIconPack: 'mdi'
 })
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:3333',
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  }
+}))
 
 /* eslint-disable no-new */
 new Vue({
