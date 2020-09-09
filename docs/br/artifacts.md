@@ -8,9 +8,6 @@ Por este motivo, foi criado um Modelo de Relacionamento representado na figura a
   
 <iframe width="100%" height="600" src='https://dbdiagram.io/embed/5f37400fe1246d54aa2d653e'> </iframe>
 
-**Últimas atualizações**
-@ -14,8 +18,40 @@ Data | Atualização
-
 ## Diagrama de classes
 
 Criado para descrever a forma de como os dados são trabalhados, o diagrama de classes esboça como as estruturas responsáveis pela leitura, alteração e remoção de dados são dispostas, afim de expor o método de organização utilizado dento do código fonte. Além de também retratar os niveis de privacidades de dados e como eles são moldados.
@@ -53,3 +50,5 @@ RF004  | Restrição no formato de arquivos | Arquivos a serem anexados serão r
 RF005  | Criptografia de senhas | Todas as senhas dos clientes devem ser criptografadas, para segurança dos usuários | Essencial
 RF006  | Registro de log | Manter o registro de logs do sistema, notificando questão de falhas, erros, problemas ocorridos, quando estes acontecem e qual seu efeito e situação no sistema | Essencial
 RF007  | Possibilitar vínculo de contas com contas digitais | Possibilitar se cadastrar utilizando contas digitais, como Google, Facebook, Github | Média
+RF008  | Atualização dos quadros em tempo real | Quando realizada alguma alteração de estrutura do quadro, a atualização do mesmo será automática | Essencial
+RF009  | Notificar API Offline | Caso o servidor da API estiver desligado, informar na tela que o mesmo está sendo iniciado | Média
