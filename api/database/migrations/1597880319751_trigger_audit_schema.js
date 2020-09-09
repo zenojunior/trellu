@@ -32,6 +32,10 @@ class TriggerAuditSchema extends Schema {
       CREATE TRIGGER audit_cards
       AFTER INSERT OR UPDATE OR DELETE ON cards
       FOR EACH ROW
+      EXECUTE PROCEDURE audit();
+      CREATE TRIGGER audit_lists
+      AFTER INSERT OR UPDATE OR DELETE ON lists
+      FOR EACH ROW
       EXECUTE PROCEDURE audit();`)
   }
 
@@ -39,6 +43,7 @@ class TriggerAuditSchema extends Schema {
     await Database.raw('DROP TRIGGER audit_users ON users')
     await Database.raw('DROP TRIGGER audit_boards ON boards')
     await Database.raw('DROP TRIGGER audit_cards ON cards')
+    await Database.raw('DROP TRIGGER audit_lists ON lists')
   }
 }
 
