@@ -1,59 +1,73 @@
 'use strict'
 
 
-const User = use('App/Models/User')
-const Board = use('App/Models/Board')
-const List = use('App/Models/List')
-const Card = use('App/Models/Card')
+const Group = use('App/Models/Group')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 
-class UserController {
+class GroupController {
 
-  async users({request, response, auth}){
-    try{
-      const page = request.input('page').length === 0 ? 1 : request.input('page')
-      const users = await User.paginate(page)
-      return response.status(200).json(users)
-    }catch (error) {
-      await logger('error','Erro ao listar usuários', auth, error)
+  async groups({response, auth}) {
+    try {
+      const groups = await Group.all()
+      return response.status(200).json(groups)
+    } catch (error) {
+      await logger('error', 'Erro na listagem de grupos', auth, error)
+      return response.status(500).json({message: 'Erro na listagem de grupos', error})
     }
   }
 
-  async update({request, response, auth}) {
-    const {name, group_id} = request.all()
+  async create({request, response, auth}) {
+    try {
+      const group = await Group.create(request.all())
+      return response.status(200).json(group);
+    } catch (error) {
+      await logger('error', 'Erro ao criar o grupo', auth, error)
+      return response.status(500).json({message: 'Erro ao criar o grupo', error})
+    }
+  }
+
+  async update({params, response, auth, request}) {
+    try {
+      let group = await Group.find(params.id)
+      if (request.input('name')) group.name = request.input('name')
+      await group.save()
+      return response.status(200).json(group);
+    } catch (error) {
+      await logger('error', 'Erro ao atualizar o grupo', auth, error)
+      return response.status(500).json({message: 'Erro ao atualizar o grupo', error})
+    }
+  }
+
+  async group({response, auth, params}) {
+    try {
+      const group = await Group.find(params.id)
+      return response.status(200).json(group)
+    } catch (error) {
+      await logger('error', 'Erro ao buscar o grupo', auth, error)
+      return response.status(500).json({message: 'Erro ao buscar o grupo', error})
+    }
+  }
+
+  async delete({params, auth, response}) {
     const transition = await Database.beginTransaction()
     try {
-      const user = await auth.getUser()
-      await Database.table('users').where('id', user.id).update({name, group_id})
+      const group = await Group.findOrFail(params.id)
+      const users = await Database.table('users').where('group_id', params.id)
+      if(users.length !== 0){
+        await logger('error', 'Operação inválida. Usuários vinculados ao grupo.', auth)
+        return response.status(403).json({message: 'Operação inválida. Usuários vinculados ao grupo.'})
+      }
+      await group.delete()
       await transition.commit()
-      return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
+      return response.status(200).json({message: 'Grupo removido com sucesso.'})
     } catch (error) {
       await transition.rollback()
-      await logger('error','Erro ao atualizar o usuário', auth, error)
-      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
-    }
-  }
-
-  async delete({response, auth, params}) {
-    try {
-      const user = await User.find(params.id)
-      const boards = await Board.query().where('user_id', user.id).get()
-      for (let board of boards) {
-        const lists = await Database.table('lists').where('board_id', board.id)
-        for (let list of lists) {
-          await Database.table('cards').where('list_id', list.id).delete()
-          await Database.table('lists').where('id', list.id).delete()
-        }
-      }
-      await user.delete()
-      return response.status(200).json({message: 'Usuário removido com sucesso.'})
-    } catch (error) {
-      await logger('error','Erro ao excluir o usuário', auth, error)
-      return response.status(500).json({message: 'Erro ao excluir o usuário.', error})
+      await logger('error', 'Erro ao excluir o grupo', auth, error)
+      return response.status(500).json({message: 'Erro ao excluir o grupo.', error})
     }
   }
 
 }
 
-module.exports = UserController
+module.exports = GroupController

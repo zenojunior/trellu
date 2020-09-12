@@ -7,12 +7,23 @@ const logger = use('App/Helpers/Logger')
 
 class UserController {
 
+  async users({request, response, auth}) {
+    try {
+      const page = request.input('page') === undefined ? 1 : request.input('page')
+      const users = await User.query().select('id', 'name', 'username', 'email').paginate(page)
+      return response.status(200).json(users)
+    } catch (error) {
+      await logger('error', 'Erro ao listar usuários', auth, error)
+      return response.status(500).json({message: 'Erro na listagem de usuários', error})
+    }
+  }
+
   async update({request, response, auth}) {
-    const {name} = request.all()
+    const {name, group_id} = request.all()
     const transition = await Database.beginTransaction()
     try {
       const user = await auth.getUser()
-      await Database.table('users').where('id', user.id).update({name})
+      await Database.table('users').where('id', user.id).update({name, group_id})
       await transition.commit()
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
@@ -44,11 +55,20 @@ class UserController {
 
   async delete({response, auth, params}) {
     try {
-      let user = await User.find(params.id)
+      const user = await User.findOrFail(params.id)
+      const boards = await Database.table('boards').where('user_id', user.id)
+      for (let board of boards) {
+        const lists = await Database.table('lists').where('board_id', board.id)
+        for (let list of lists) {
+          await Database.table('cards').where('list_id', list.id).delete()
+          await Database.table('lists').where('id', list.id).delete()
+        }
+      }
+      await Database.table('boards').where('user_id', user.id).delete()
       await user.delete()
       return response.status(200).json({message: 'Usuário removido com sucesso.'})
     } catch (error) {
-      await logger('error','Erro ao excluir o usuário', auth, error)
+      await logger('error', 'Erro ao excluir o usuário', auth, error)
       return response.status(500).json({message: 'Erro ao excluir o usuário.', error})
     }
   }
