@@ -24,6 +24,15 @@
         <template slot="end">
             <b-navbar-item tag="div">
               <b-tooltip 
+                label="Admin"
+                type="is-dark"
+                position="is-bottom"
+              >
+                <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/admin' }" type="is-primary" style="margin-right: 10px;">
+                    <b-icon icon="cog"></b-icon>
+                </b-navbar-item>
+              </b-tooltip>
+              <b-tooltip 
                 label="Sair"
                 type="is-dark"
                 position="is-bottom"
