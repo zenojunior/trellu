@@ -13,6 +13,7 @@ class CardsSchema extends Schema {
       table.integer('list_id').unsigned().references('id').inTable('lists')
       table.boolean('archived').default(0)
       table.dateTime('date').nullable()
+      table.boolean('concluded').nullable()
       table.timestamps()
     })
   }
