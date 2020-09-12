@@ -76,7 +76,7 @@ class ListController {
   async delete({params, auth, response}) {
     const transition = await Database.beginTransaction()
     try {
-      let list = await List.find(params.id)
+      const list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
         await Card.query().where('list_id', params.id).delete()
         await list.delete()
