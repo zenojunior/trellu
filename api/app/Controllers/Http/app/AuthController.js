@@ -14,8 +14,8 @@ class AuthController {
       let user = await User.create(request.all())
       await auth.login(user)
       await transition.commit()
-      const { email, name, username } = user;
-      return response.status(201).json({name, email, username})
+      const { email, name, username , group_id} = user;
+      return response.status(201).json({name, email, username, group_id})
     } catch (error) {
       await transition.rollback()
       await logger('error','Erro ao cadastrar o usuário', null, error)

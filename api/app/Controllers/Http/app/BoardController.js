@@ -75,7 +75,7 @@ class BoardController {
       }
       await board.delete()
       await transition.commit()
-      return response.status(200).json({message: 'Qauadro removido com sucesso.'})
+      return response.status(200).json({message: 'Quadro removido com sucesso.'})
     } catch (error) {
       await transition.rollback()
       await logger('error', 'Erro ao excluir o quadro', auth, error)
