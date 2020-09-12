@@ -9,11 +9,9 @@ class TriggerAuditSchema extends Schema {
   async up() {
     await Database.raw(`CREATE OR REPLACE FUNCTION audit()
       RETURNS TRIGGER
-      AS $$ BEGIN IF TG_OP = 'DELETE' THEN
+      AS $$ BEGIN
+      IF TG_OP = 'DELETE' THEN
       INSERT INTO audit SELECT 'D', OLD.id , TG_TABLE_NAME, now(), now();
-      END IF;
-      IF TG_OP='INSERT' THEN
-      INSERT INTO audit SELECT 'U', NEW.id, TG_TABLE_NAME, now(), now();
       END IF;
       IF TG_OP='UPDATE' THEN
       INSERT INTO audit SELECT 'I', OLD.id, TG_TABLE_NAME, now(), now();
@@ -22,19 +20,19 @@ class TriggerAuditSchema extends Schema {
       END;
       $$ LANGUAGE plpgsql;
       CREATE TRIGGER audit_users
-      AFTER INSERT OR UPDATE OR DELETE ON users
+      AFTER UPDATE OR DELETE ON users
       FOR EACH ROW
       EXECUTE PROCEDURE audit();
       CREATE TRIGGER audit_boards
-      AFTER INSERT OR UPDATE OR DELETE ON boards
+      AFTER UPDATE OR DELETE ON boards
       FOR EACH ROW
       EXECUTE PROCEDURE audit();
       CREATE TRIGGER audit_cards
-      AFTER INSERT OR UPDATE OR DELETE ON cards
+      AFTER UPDATE OR DELETE ON cards
       FOR EACH ROW
       EXECUTE PROCEDURE audit();
       CREATE TRIGGER audit_lists
-      AFTER INSERT OR UPDATE OR DELETE ON lists
+      AFTER UPDATE OR DELETE ON lists
       FOR EACH ROW
       EXECUTE PROCEDURE audit();`)
   }
