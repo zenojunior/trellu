@@ -1,7 +1,7 @@
 'use strict'
 const Group = use('App/Models/Group')
 
-class 1_GroupSeeder {
+class GroupSeeder {
   async run () {
     await Group.create({
       id: 1,
