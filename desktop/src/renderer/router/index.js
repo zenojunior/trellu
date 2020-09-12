@@ -38,6 +38,46 @@ let router = new Router({
       }
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: require('@/components/pages/admin/AdminPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin-users',
+      name: 'admin-users',
+      component: require('@/components/pages/admin/AdminUsersPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin-groups',
+      name: 'admin-groups',
+      component: require('@/components/pages/admin/AdminGroupsPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin-audity',
+      name: 'admin-audity',
+      component: require('@/components/pages/admin/AdminAudityPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin-logs',
+      name: 'admin-logs',
+      component: require('@/components/pages/admin/AdminLogsPage').default,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '*',
       redirect: '/'
     }

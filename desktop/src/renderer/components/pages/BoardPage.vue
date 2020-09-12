@@ -36,7 +36,7 @@
               drag-class="card-ghost"
               drop-class="card-ghost-drop"
               :drop-placeholder="dropPlaceholderOptions"
-              :style="`max-height: ${listHeight }px`"
+              :style="`max-height: ${listHeight }px;width: 100%`"
             >
               <Draggable v-for="(card, index) in list.children" :key="card.id">
                 <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
