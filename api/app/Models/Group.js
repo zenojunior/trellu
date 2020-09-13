@@ -4,11 +4,11 @@
 const Model = use('Model')
 
 
-class Board extends Model {
+class Group extends Model {
 
-  lists() {
-    return this.hasMany('App/Models/List')
+  users() {
+    return this.hasMany('App/Models/Users')
   }
 }
 
-module.exports = Board
+module.exports = Group
