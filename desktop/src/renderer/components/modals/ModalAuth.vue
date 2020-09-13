@@ -48,7 +48,7 @@ export default {
       account: this.hasAccount,
       loading: false,
       errors: [],
-      errorsDuration: 6000
+      errorsDuration: 12000
     }
   },
   methods: {
@@ -59,11 +59,11 @@ export default {
       this.loading = true
       let { name, username, email, password } = this
       this.$api.post(`/api/auth/${this.account ? 'login' : 'register'}`, { name, username, email, password }).then(res => {
-        this.close()
         localStorage.setItem('user', JSON.stringify(res.data))
         this.$router.push('/dashboard')
-      }).catch(err => {
-        if (err.response.data.message) this.errors = [err.response.data.message]
+        this.close()
+      }).catch(error => {
+        this.errors = error.errors ? [error.errors[0].message] : [error.message]
         setTimeout(() => { this.errors = [] }, this.errorsDuration)
       }).then(() => {
         this.loading = false

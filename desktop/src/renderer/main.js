@@ -19,16 +19,11 @@ const api = axios.create({ baseURL: baseUrl[process.env.NODE_ENV] })
 api.interceptors.response.use(
   response => response,
   error => {
-    switch (error.response.data.error.name) {
-      case 'InvalidSessionException':
-        localStorage.clear()
-        router.replace({path: '/'})
-        break
-      case 'HttpException':
-        // api.get('api/auth/logout')
-        break
-      default:
-        break
+    if (error.response.status === 401) {
+      localStorage.clear()
+      router.replace({path: '/'})
+    } else {
+      return Promise.reject(error.response.data)
     }
   }
 )
