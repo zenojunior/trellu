@@ -29,6 +29,7 @@
         <b-checkbox>Lembrar deste computador</b-checkbox>
       </section>
       <footer class="modal-card-foot">
+        <button class="button" type="button" @click="logout()">Logout</button>
         <button class="button" type="button" @click="close()">Cancelar</button>
         <button class="button is-primary" @click="check()" :disabled="loading">Entrar</button>
       </footer>
@@ -52,6 +53,9 @@ export default {
     }
   },
   methods: {
+    logout () {
+      this.$global.logout()
+    },
     close () {
       this.$parent.close()
     },
