@@ -2,8 +2,7 @@
   <admin-layout>
     <div class="is-flex">
       <h1 class="title is-5">Grupos</h1>
-      <b-button @click="refresh()" type="is-light" icon-right="refresh" style="margin-left: auto"/>
-      <b-button @click="groupEdit({})" type="is-primary" icon-right="plus" style="margin-left: 5px"/>
+      <b-button @click="groupEdit({})" type="is-primary" icon-right="plus" style="margin-left: auto"/>
     </div>
     <b-table :data="data" hoverable :loading="loading">
       <template v-slot="props">
@@ -25,7 +24,7 @@
 
 <script>
 import AdminLayout from '../../layout/AdminLayout'
-import ModalGroup from '../../modals/ModalGroup'
+import ModalGroup from '../../modals/AdminModalGroup'
 
 export default {
   components: {
@@ -61,6 +60,11 @@ export default {
         trapFocus: true,
         props: {
           group
+        },
+        events: {
+          close: () => {
+            this.getData()
+          }
         }
       })
     },
@@ -75,6 +79,7 @@ export default {
         onConfirm: () => {
           this.$api.delete(`/api/admin/groups/${groupId}`)
             .then(res => {
+              this.getData()
               this.$buefy.toast.open({ message: 'Grupo excluído.', position: 'is-bottom-right' })
             })
             .catch(error => {

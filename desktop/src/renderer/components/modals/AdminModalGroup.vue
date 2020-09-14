@@ -47,6 +47,7 @@ export default {
   },
   methods: {
     close () {
+      this.$emit('close')
       this.$parent.close()
     },
     save: async function () {
