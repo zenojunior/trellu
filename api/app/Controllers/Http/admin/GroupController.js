@@ -56,7 +56,7 @@ class GroupController {
       const users = await Database.table('users').where('group_id', params.id)
       if(users.length !== 0){
         await logger('error', 'Operação inválida. Usuários vinculados ao grupo.', auth)
-        return response.status(403).json({message: 'Operação inválida. Usuários vinculados ao grupo.'})
+        return response.status(403).json({title: 'Exclusão bloqueada', message: 'Não é possível excluir o grupo pois existem usuários vinculados a ele.'})
       }
       await group.delete()
       await transition.commit()

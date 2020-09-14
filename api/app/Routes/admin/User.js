@@ -3,7 +3,7 @@
 const Route = use('Route')
 
 module.exports = () => {
-  Route.get('/', 'site/UserController.users').middleware('auth')
-  Route.put('/:id', 'site/UserController.update').middleware('auth')
-  Route.delete('/:id', 'site/UserController.delete').middleware('auth')
+  Route.get('/', 'admin/UserController.users').middleware('auth')
+  Route.put('/:id', 'admin/UserController.update').middleware('auth')
+  Route.delete('/:id', 'admin/UserController.delete').middleware('auth')
 }

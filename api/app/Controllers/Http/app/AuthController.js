@@ -33,7 +33,7 @@ class AuthController {
       return response.status(201).json({name, email, username})
     } catch (error) {
       await logger('info','Tentativa de acesso inválida', null, error)
-      return response.status(401).json({message: 'O e-mail ou senha estão incorretos.'})
+      return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
     }
   }
 
@@ -46,7 +46,7 @@ class AuthController {
       return response.status(201).json({message: 'Usuário deslogado.'})
     } catch (error) {
       await logger('error','Não há usuário autenticado', null, error)
-      return response.status(401).json({message: 'Não há usuário autenticado.'})
+      return response.status(403).json({message: 'Não há usuário autenticado.'})
     }
 
 
