@@ -18,8 +18,12 @@
           <b-field label="Id" v-if="user && user.id">
             <b-input type="text" v-model="user.id" disabled></b-input>
           </b-field>
-          <b-field label="Username" v-if="user && user.username" expanded>
-            <b-input type="text" v-model="user.username" disabled></b-input>
+          <b-field label="Username" expanded>
+            <b-input v-if="user && user.username" type="text" v-model="user.username" disabled></b-input>
+            <b-input v-else type="text" v-model="data.username"></b-input>
+          </b-field>
+          <b-field label="Senha" v-if="user && !user.name" expanded>
+            <b-input type="password" v-model="data.password" password-reveal required></b-input>
           </b-field>
         </b-field>
         <b-field grouped>
@@ -30,6 +34,14 @@
           <b-field label="Email" expanded>
             <b-input v-if="user && user.email" type="email" v-model="user.email" required></b-input>
             <b-input v-else type="email" v-model="data.email" required></b-input>
+          </b-field>
+          <b-field label="Grupo" expanded>
+            <b-select v-if="user && user.group_id" v-model="user.group_id">
+              <option v-for="group in groups" :value="group.id" :key="group.id">{{ group.name }}</option>
+            </b-select>
+            <b-select v-else v-model="data.group_id">
+              <option v-for="group in groups" :value="group.id" :key="group.id">{{ group.name }}</option>
+            </b-select>
           </b-field>
         </b-field>
       </section>
@@ -45,12 +57,15 @@
 
 <script>
 export default {
-  props: ['user'],
+  props: ['user', 'groups'],
   data () {
     return {
       data: {
         name: '',
-        email: ''
+        email: '',
+        username: '',
+        password: '',
+        group_id: 2
       },
       newUser: false,
       loading: false
@@ -69,7 +84,7 @@ export default {
       console.log(this.user)
       let message = ''
       if (this.newUser) {
-        await this.$api.post(`api/admin/users`, {name: this.data.name})
+        await this.$api.post(`api/admin/users`, this.data)
         message = 'Usuário criado'
       } else {
         message = 'Usuário atualizado'
