@@ -10,7 +10,7 @@ class UserController {
   async users({request, response, auth}) {
     try {
       const page = request.input('page') === undefined ? 1 : request.input('page')
-      const users = await User.query().select('id', 'name', 'username', 'email', 'group_id').paginate(page)
+      const users = await User.query().select('id', 'name', 'username', 'email', 'group_id').paginate(page, 10)
       return response.status(200).json(users)
     } catch (error) {
       await logger('error', 'Erro ao listar usuários', auth, error)
@@ -28,27 +28,17 @@ class UserController {
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
       await logger('error','Erro ao atualizar o usuário', auth, error)
-      return response.status(401).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
+      return response.status(403).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
     }
   }
 
-  async updatePassword({request, response, auth}) {
-
+  async create({request, response, auth}) {
     try {
-      const {password, newPassword} = request.all()
-      const user = await auth.getUser()
-      const passwordValid = await Hash.verify(password, user.password);
-      if (!passwordValid) {
-        return response.status(400).json({message: "As senhas não são compatíveis."})
-      }
-      user.password = newPassword
-      const result = await user.save()
-      return response.status(200).json({message: "Senha atualizada."}, result)
-
+      const user = await User.create(request.all())
+      return response.status(200).json({message: `A conta de ${user.name.split(' ').shift()} foi criada.`})
     } catch (error) {
-      await logger('error','Erro ao atualizar o usuário', auth, error)
-      return response.status(500).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
-
+      await logger('error','Erro ao criar o usuário', auth, error)
+      return response.status(403).json({message: 'Erro ao atualizar o usuário. Caso o erro persista, entre em contato com o Administrador.', error})
     }
   }
 
@@ -72,34 +62,6 @@ class UserController {
     }
   }
 
-  async redirect({ally}) {
-    await ally.driver('facebook').redirect()
-  }
-
-  async callback({ally, auth}) {
-    try {
-      const fbUser = await ally.driver('facebook').getUser()
-
-      // user details to be saved
-      const userDetails = {
-        email: fbUser.getEmail(),
-        token: fbUser.getAccessToken(),
-        login_source: 'facebook'
-      }
-
-      // search for existing user
-      const whereClause = {
-        email: fbUser.getEmail()
-      }
-
-      const user = await User.findOrCreate(whereClause, userDetails)
-      await auth.login(user)
-
-      return 'Logged in'
-    } catch (error) {
-      return 'Unable to authenticate. Try again later'
-    }
-  }
 }
 
 module.exports = UserController
