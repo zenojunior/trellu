@@ -11,10 +11,10 @@ class TriggerAuditSchema extends Schema {
       RETURNS TRIGGER
       AS $$ BEGIN
       IF TG_OP = 'DELETE' THEN
-      INSERT INTO audit SELECT 'D', OLD.id , TG_TABLE_NAME, now(), now();
+      INSERT INTO audit SELECT nextval('audit_id_seq'::regclass), 'D', OLD.id , TG_TABLE_NAME, now(), now();
       END IF;
       IF TG_OP='UPDATE' THEN
-      INSERT INTO audit SELECT 'I', OLD.id, TG_TABLE_NAME, now(), now();
+      INSERT INTO audit SELECT nextval('audit_id_seq'::regclass), 'I', OLD.id, TG_TABLE_NAME, now(), now();
       END IF;
       RETURN null;
       END;

@@ -13,7 +13,7 @@ Route.group(use('App/Routes/app/Card')).prefix('api/cards')
 
 Route.group(use('App/Routes/admin/User')).prefix('api/admin/users')
 Route.group(use('App/Routes/admin/Group')).prefix('api/admin/groups')
+Route.group(use('App/Routes/admin/Audit')).prefix('api/admin/audits')
+Route.group(use('App/Routes/admin/Log')).prefix('api/admin/logs')
 
-// Route.get('login/facebook', 'UserController.redirect')
-// Route.get('facebook/callback', 'UserController.callback')
 
