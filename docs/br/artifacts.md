@@ -8,6 +8,16 @@ Por este motivo, foi criado um Modelo de Relacionamento representado na figura a
   
 <iframe width="100%" height="600" src='https://dbdiagram.io/embed/5f37400fe1246d54aa2d653e'> </iframe>
 
+
+**Últimas atualizações**
+-
+Data | Atualização
+------------ | -------------
+15/08/2020 | **Mudança do banco** <br> Utilizávamos MySQL porém vimos uma dificuldade em achar um serviço gratuito para rodar nossa aplicação em produção. E como estamos utilizando Heroku para hospedar nossa API, encontramos uma [solução em PostgreSQL](https://elements.heroku.com/addons/heroku-postgresql) que atendeu nossas expectativas, oferecida pela própria Heroku. Então decidimos migrar de MySQL para PostgreSQL.
+23/08/2020 | **Tabela de listas adicionada** <br> A proposta inicial era salvar a estrutura (nome das listas e seus cards ordenados) diretamente na tabela Boards. <br> Devido a dificuldade de implementação de uma parte não relacional, com um banco relacional, optamos por criar a tabela de Lists e remover o atributo structure da tabela Boards. Assim, um quadro possui várias listas, e cada lista possui diversos cards.
+24/08/2020 | **Criação das tabelas de auditoria e logs** <br> Por necessidade de controle dos processos e manutenção do sistema foi desenvolvida a auditoria e o log de erros.
+11/09/2020 | **Criação da seção adminitrativa do sistema** <br> Com necessidade de manter controles de ações em uma área mais abrangente, alem de acesso a parte de erros e mudanças, foi desenvolvida a seção adminitrativa do sistema.
+
 ## Diagrama de classes
 
 Criado para descrever a forma de como os dados são trabalhados, o diagrama de classes esboça como as estruturas responsáveis pela leitura, alteração e remoção de dados são dispostas, afim de expor o método de organização utilizado dento do código fonte. Além de também retratar os niveis de privacidades de dados e como eles são moldados.
@@ -15,7 +25,6 @@ Criado para descrever a forma de como os dados são trabalhados, o diagrama de c
 <img src="_media/class.jpg">
 
 ## Casos de uso
-
 
 O diagrama de casos de uso é responsável por esboçar a forma de como o usuário final irá interagir como sistema, e de quais formas as tarefas são correlacionadas entre si. Designado a expor de que modo as ações são entrelaçadas, levando em consideração o modo de como o usuário ira atuar dentro do sistema.
 
@@ -35,6 +44,10 @@ RF005  | Manter controle de datas nas tarefas | Em casos de tarefas com prazos a
 RF006  | Manter histórico de alterações de tarefas | Possibilitar que o usuário tenha acesso a todas as informações relacionadas a todas as tarefas, quando tarefas forem movidas de listas, manter um histórico de data e o que foi alterado | Essencial
 RF007  | Possibilitar a inserção de anexos às tarefas | Possibilitar ao usuário vincular arquivos de anexos às tarefas | Média
 RF008   | Possibilitar a inserção de checklists às tarefas | Possibilitar ao usuário vincular checklists às tarefas | Média
+RF009  | Manter tela adminitrativa | Possibilitar aos usuários adminitradores acesso a partes restritas de adminitração do sistema | Média
+RF010 | Manter controle de usúarios na parte administrativa | Possibilitar aos usuários adminitradores acesso ao cadastro de usuários possibilitando realizar alterações e ajustes | Média
+RF011 | Manter listagem de logs | Possibilitar aos usuários adminitradores acesso aos logs de erros | Média
+RF012 | Manter listagem de auditorias | Possibilitar aos usuários adminitradores acesso as auditorias | Média
 
 
 ## Requisitos não funcionais
