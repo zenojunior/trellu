@@ -13,7 +13,7 @@ class CardController {
         return response.status(200).json(card);
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
-        return response.status(401).json({message: 'Usuário não autorizado.'});
+        return response.status(403).json({message: 'Usuário não autorizado.'});
       }
     } catch (error) {
       await logger('error', 'Erro ao criar o cartão', auth, error)
@@ -25,16 +25,13 @@ class CardController {
     try {
       let card = await Card.find(params.id)
       if (await this.authorized(auth, card.list_id)) {
-        if (request.input('title')) card.title = request.input('title')
-        if (request.input('description')) card.description = request.input('description')
-        if (request.input('archived')) card.archived = request.input('archived')
-        if (request.input('order')) card.order = request.input('order')
-        if (request.input('date')) card.date = await this.formatDate(request.input('date'))
+        const data = request.only(['title', 'description', 'archived', 'order', 'date', 'concluded'])
+        card.merge(data)
         await card.save()
         return response.status(200).json(card);
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
-        return response.status(401).json({message: 'Usuário não autorizado.'});
+        return response.status(403).json({message: 'Usuário não autorizado.'});
       }
     } catch (error) {
       await logger('error', 'Erro ao atualizar o cartão', auth, error)
@@ -49,7 +46,7 @@ class CardController {
         return response.status(200).json(card)
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
-        return response.status(401).json({message: 'Usuário não autorizado.'});
+        return response.status(403).json({message: 'Usuário não autorizado.'});
       }
     } catch (error) {
       await logger('error', 'Erro ao buscar o cartão', auth, error)
@@ -65,7 +62,7 @@ class CardController {
         return response.status(200).json({message: 'Cartão removido com sucesso.'})
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
-        return response.status(401).json({message: 'Usuário não autorizado.'});
+        return response.status(403).json({message: 'Usuário não autorizado.'});
       }
     } catch (error) {
       await logger('error', 'Erro ao excluir o cartão', auth, error)

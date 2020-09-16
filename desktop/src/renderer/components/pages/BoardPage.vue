@@ -165,9 +165,7 @@ export default {
           children: generateItems(cards.length, cardIndex => {
             let card = cards[cardIndex]
             return {
-              id: card.id,
-              title: card.title,
-              description: card.description,
+              ...card,
               type: 'draggable'
             }
           })
