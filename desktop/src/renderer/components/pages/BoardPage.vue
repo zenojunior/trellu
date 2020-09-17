@@ -41,6 +41,10 @@
               <Draggable v-for="(card, index) in list.children" :key="card.id">
                 <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
                   <p>{{ card.title }}</p>
+                  <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
+                    <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
+                    {{ card.date | moment("from", "now") }}
+                  </b-tag>
                 </div>
               </Draggable>
             </Container>
@@ -190,6 +194,19 @@ export default {
           card
         }
       })
+    },
+    checkColorClass (date, concluded) {
+      const oneDay = 24 * 60 * 60 * 1000
+      const diffDays = Math.round(Math.abs((new Date() - new Date(date)) / oneDay))
+      if (concluded) {
+        return 'is-success'
+      } else if (!diffDays) {
+        return 'is-danger'
+      } else if (diffDays <= 1) {
+        return 'is-warning'
+      } else {
+        return 'is-light'
+      }
     },
     deleteCard (cardId) {
       let list = this.board.lists.find(list => list.cards.find(card => card.id === cardId))

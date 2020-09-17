@@ -62,7 +62,7 @@
             </template>
             <template slot="right">
                 <button class="button is-danger"
-                    @click="card.date = null">
+                    @click="setDate(null)">
                     <b-icon icon="close"></b-icon>
                     <span>Limpar</span>
                 </button>
@@ -93,7 +93,7 @@ export default {
     }
   },
   created () {
-    this.card.date = new Date(this.card.date)
+    if (this.card.date) this.card.date = new Date(this.card.date)
   },
   methods: {
     updateTitle (title) {
@@ -106,7 +106,8 @@ export default {
       this.$api.put(`api/cards/${this.card.id}`, { concluded })
     },
     setDate (date) {
-      this.$api.put(`api/cards/${this.card.id}`, { date: date.toLocaleString() })
+      if (!date) this.card.date = null
+      this.$api.put(`api/cards/${this.card.id}`, { date: date ? date.toLocaleString() : null })
     },
     deleteCard () {
       this.$buefy.dialog.confirm({

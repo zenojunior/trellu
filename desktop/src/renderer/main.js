@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import axios from 'axios'
 import Buefy from 'buefy'
+import VueMoment from 'vue-moment'
+import moment from 'moment-timezone'
 
 import App from './App'
 import router from './router'
@@ -30,6 +32,9 @@ api.interceptors.response.use(
 
 Vue.api = Vue.prototype.$api = api
 Vue.config.productionTip = false
+Vue.use(VueMoment, {
+  moment
+})
 Vue.use(Buefy, {
   defaultIconPack: 'mdi'
 })

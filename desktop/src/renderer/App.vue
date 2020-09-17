@@ -5,8 +5,12 @@
 </template>
 
 <script>
+  import 'moment/locale/pt-br'
   import '@mdi/font/css/materialdesignicons.css'
   export default {
+    created () {
+      this.$moment.locale('pt-br')
+    }
   }
 </script>
 
