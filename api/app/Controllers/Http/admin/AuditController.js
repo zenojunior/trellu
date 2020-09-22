@@ -2,13 +2,14 @@
 
 const Audit = use('App/Models/Audit')
 const logger = use('App/Helpers/Logger')
+const Database = use('Database')
 
 class AuditController {
 
   async audits({response, auth, request}) {
     try {
       const page = request.input('page') === undefined ? 1 : request.input('page')
-      const audits = await Audit.query().paginate(page)
+      const audits = await Database.table('audit').paginate(page, 20)
       return response.status(200).json(audits)
     } catch (error) {
       await logger('error', 'Erro na listagem de auditorias', auth, error)

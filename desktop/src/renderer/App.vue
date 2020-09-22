@@ -19,6 +19,8 @@
   $primary: #5E2B97;
 
   * { user-select: none; }
+  .select-text {user-select: text!important;}
+
   ._horizontal-scroll {
     width: 100%;
   }

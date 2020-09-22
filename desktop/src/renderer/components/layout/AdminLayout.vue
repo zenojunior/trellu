@@ -6,7 +6,7 @@
         <div class="column is-one-quarter">
           <menu-admin />
         </div>
-        <div class="column">
+        <div class="column is-three-quarters">
           <slot />
         </div>
       </div>

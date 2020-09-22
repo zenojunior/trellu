@@ -8,7 +8,9 @@ class LogController {
   async logs({response, auth, request}) {
     try {
       const page = request.input('page') === undefined ? 1 : request.input('page')
-      const logs = await Log.query().paginate(page)
+      const logs = await Log.query().with('user', (builder) => {
+        builder.select('name', 'email', 'username', 'id', 'group_id')
+      }).orderBy('id', 'DESC').paginate(page)
       return response.status(200).json(logs)
     } catch (error) {
       await logger('error', 'Erro na listagem de logs', auth, error)
