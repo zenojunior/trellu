@@ -10,7 +10,7 @@ class UserController {
   async users({request, response, auth}) {
     try {
       const page = request.input('page') === undefined ? 1 : request.input('page')
-      const users = await User.query().select('id', 'name', 'username', 'email', 'group_id').paginate(page, 10)
+      const users = await User.query().select('id', 'name', 'username', 'email', 'group_id').paginate(page)
       return response.status(200).json(users)
     } catch (error) {
       await logger('error', 'Erro ao listar usuários', auth, error)
