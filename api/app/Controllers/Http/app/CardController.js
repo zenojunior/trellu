@@ -46,7 +46,7 @@ class CardController {
         return response.status(200).json(card)
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
-        return response.status(403).json({message: 'Usuário não autorizado.'});
+        return response.status(403).json({message: 'Usuário não autorizado.'})
       }
     } catch (error) {
       await logger('error', 'Erro ao buscar o cartão', auth, error)

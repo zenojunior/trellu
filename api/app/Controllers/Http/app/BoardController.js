@@ -4,6 +4,7 @@ const List = use('App/Models/List')
 const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class BoardController {
 
@@ -38,12 +39,14 @@ class BoardController {
   async update({params, response, auth, request}) {
     try {
       let board = await Board.find(params.id)
-      if (request.input('title')) board.title = request.input('title')
-      if (request.input('color')) board.color = request.input('color')
-      if (request.input('archived')) board.title = request.input('archived')
-      if (request.input('featured')) board.featured = request.input('featured')
+      const {title, color, archived, featured} = request.all()
+      board.title = title
+      board.color = color
+      board.archived = archived
+      board.featured = featured
+      if(archived) await auditor('Board archived', board.id, 'boards', navigator.platform, auth)
       await board.save()
-      return response.status(200).json(board);
+      return response.status(200).json(board)
     } catch (error) {
       await logger('error', 'Erro ao atualizar o quadro', auth, error)
       return response.status(500).json({message: 'Erro ao atualizar o quadro', error})
@@ -73,6 +76,7 @@ class BoardController {
         await Database.table('cards').where('list_id', list.id).delete()
         await Database.table('lists').where('id', list.id).delete()
       }
+      await auditor('Delete', board.id, 'boards', navigator.platform, auth)
       await board.delete()
       await transition.commit()
       return response.status(200).json({message: 'Quadro removido com sucesso.'})
@@ -95,7 +99,7 @@ class BoardController {
           let card = await Card.find(cardValue)
           card.order = cardIndex + 1
           card.list_id = list.id
-          card.save();
+          card.save()
         }
       }
       await transition.commit()

@@ -4,6 +4,7 @@ const Hash = use('Hash')
 const Database = use('Database')
 const User = use('App/Models/User')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class AuthController {
 
@@ -11,10 +12,12 @@ class AuthController {
   async register({request, response, auth}) {
     const transition = await Database.beginTransaction()
     try {
+
+      const { email, name, username , group_id, password} = request.all();
       let user = await User.create(request.all())
       await auth.login(user)
       await transition.commit()
-      const { email, name, username , group_id} = user;
+      await auditor('Register of a new user', user.id, 'users', navigator.platform, auth)
       return response.status(201).json({name, email, username, group_id})
     } catch (error) {
       await transition.rollback()
@@ -30,6 +33,7 @@ class AuthController {
       await auth.attempt(email, password)
       const user = await auth.getUser()
       const { name, username } = user;
+      await auditor('User login', user.id, 'users', navigator.platform, auth)
       return response.status(201).json({name, email, username})
     } catch (error) {
       await logger('info','Tentativa de acesso inválida', null, error)
@@ -41,6 +45,7 @@ class AuthController {
     try {
       const isLogged = await auth.check()
       if (isLogged) {
+        await auditor('Logout', auth.id, 'users', navigator.platform, auth)
         await auth.logout();
       }
       return response.status(201).json({message: 'Usuário deslogado.'})

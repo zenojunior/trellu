@@ -1,7 +1,3 @@
-// const Server = use('Server')
-// const io = use('socket.io')(Server.getInstance())
+const Ws = use('Ws')
 
-// io.on('connection', function (socket) {
-  // let cookie = socket.handshake.headers.cookie;
-  // console.log(`a user connected ${socket.id}`);
-// })
+Ws.channel('trellu', 'SocketController')

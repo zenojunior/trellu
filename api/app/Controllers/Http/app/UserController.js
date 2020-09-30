@@ -4,6 +4,7 @@ const Hash = use('Hash')
 const User = use('App/Models/User')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class UserController {
 
@@ -25,6 +26,7 @@ class UserController {
       const user = await auth.getUser()
       await Database.table('users').where('id', user.id).update({name, group_id})
       await transition.commit()
+      await auditor('User updated', user.id, 'users', navigator.platform, auth)
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
       await transition.rollback()
@@ -43,6 +45,7 @@ class UserController {
         return response.status(400).json({message: "As senhas não são compatíveis."})
       }
       user.password = newPassword
+      await auditor('Update on password', user.id, 'users', navigator.platform, auth)
       const result = await user.save()
       return response.status(200).json({message: "Senha atualizada."}, result)
 

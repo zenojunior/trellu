@@ -4,6 +4,7 @@
 const Group = use('App/Models/Group')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class GroupController {
 
@@ -20,7 +21,7 @@ class GroupController {
   async create({request, response, auth}) {
     try {
       const group = await Group.create(request.all())
-      return response.status(200).json(group);
+      return response.status(200).json(group)
     } catch (error) {
       await logger('error', 'Erro ao criar o grupo', auth, error)
       return response.status(500).json({message: 'Erro ao criar o grupo', error})
@@ -32,7 +33,7 @@ class GroupController {
       let group = await Group.find(params.id)
       if (request.input('name')) group.name = request.input('name')
       await group.save()
-      return response.status(200).json(group);
+      return response.status(200).json(group)
     } catch (error) {
       await logger('error', 'Erro ao atualizar o grupo', auth, error)
       return response.status(500).json({message: 'Erro ao atualizar o grupo', error})
@@ -58,6 +59,7 @@ class GroupController {
         await logger('error', 'Operação inválida. Usuários vinculados ao grupo.', auth)
         return response.status(403).json({title: 'Exclusão bloqueada', message: 'Não é possível excluir o grupo pois existem usuários vinculados a ele.'})
       }
+      await auditor('Group deleted', group.id, 'groups', navigator.platform, auth)
       await group.delete()
       await transition.commit()
       return response.status(200).json({message: 'Grupo removido com sucesso.'})

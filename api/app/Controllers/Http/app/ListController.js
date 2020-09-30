@@ -4,6 +4,7 @@ const Board = use('App/Models/Board')
 const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class ListController {
 
@@ -42,10 +43,13 @@ class ListController {
     try {
       let list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
-        if (request.input('title')) list.title = request.input('title')
-        if (request.input('order')) list.order = request.input('order')
-        if (request.input('archived')) list.archived = request.input('archived')
+        const {title, color, archived, featured} = request.all()
+        list.title = title
+        list.color = color
+        list.archived = archived
+        list.featured = featured
         await list.save()
+        if(archived) await auditor('Lists archived', list.id, 'boards', navigator.platform, auth)
         return response.status(200).json(list);
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
@@ -79,6 +83,7 @@ class ListController {
       const list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
         await Card.query().where('list_id', params.id).delete()
+        await auditor('List deleted', list.id, 'lists', navigator.platform, auth)
         await list.delete()
         await transition.commit()
         return response.status(200).json({message: 'Lista removida com sucesso.'})
