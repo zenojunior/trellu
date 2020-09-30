@@ -44,7 +44,7 @@ class BoardController {
       board.color = color
       board.archived = archived
       board.featured = featured
-      if(archived) await auditor('Board archived', board.id, 'boards', navigator.platform, auth)
+      if(archived) await auditor('Board archived', board.id, 'boards', 'navigator.platform', auth)
       await board.save()
       return response.status(200).json(board)
     } catch (error) {
@@ -76,7 +76,7 @@ class BoardController {
         await Database.table('cards').where('list_id', list.id).delete()
         await Database.table('lists').where('id', list.id).delete()
       }
-      await auditor('Delete', board.id, 'boards', navigator.platform, auth)
+      await auditor('Delete', board.id, 'boards', 'navigator.platform', auth)
       await board.delete()
       await transition.commit()
       return response.status(200).json({message: 'Quadro removido com sucesso.'})

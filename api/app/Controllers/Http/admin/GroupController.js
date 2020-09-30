@@ -59,7 +59,7 @@ class GroupController {
         await logger('error', 'Operação inválida. Usuários vinculados ao grupo.', auth)
         return response.status(403).json({title: 'Exclusão bloqueada', message: 'Não é possível excluir o grupo pois existem usuários vinculados a ele.'})
       }
-      await auditor('Group deleted', group.id, 'groups', navigator.platform, auth)
+      await auditor('Group deleted', group.id, 'groups', 'navigator.platform', auth)
       await group.delete()
       await transition.commit()
       return response.status(200).json({message: 'Grupo removido com sucesso.'})
