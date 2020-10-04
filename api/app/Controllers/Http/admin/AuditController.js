@@ -12,8 +12,9 @@ class AuditController {
       const {user_id, affected_table} = request.all()
       const page = request.input('page') === undefined ? 1 : request.input('page')
       const query = Audit.query()
-
-      const audits = await query.paginate(page, 10)
+      if (user_id !== undefined) query.where('user_id', user_id)
+      if (affected_table !== undefined) query.where('affected_table', affected_table)
+      const audits = await query.paginate(page)
       return response.status(200).json(audits)
     } catch (error) {
       await logger('error', 'Erro na listagem de auditorias', auth, error)
