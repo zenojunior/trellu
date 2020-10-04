@@ -24,6 +24,9 @@ class User extends Model {
   adminGroup () {
     return 1;
   }
+  static get hidden () {
+    return ['password']
+  }
 }
 
 module.exports = User

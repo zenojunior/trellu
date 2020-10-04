@@ -49,7 +49,7 @@ class ListController {
         list.archived = archived
         list.featured = featured
         await list.save()
-        if(archived) await auditor('Lists archived', list.id, 'boards',' navigator.platform', auth)
+        if(archived) await auditor('Lists archived', list.id, 'boards', request.headers()['user-agent'], auth)
         return response.status(200).json(list);
       } else {
         await logger('warning', 'Usuário não autorizado', auth)
@@ -77,13 +77,13 @@ class ListController {
   }
 
 
-  async delete({params, auth, response}) {
+  async delete({params, auth, response, request}) {
     const transition = await Database.beginTransaction()
     try {
       const list = await List.find(params.id)
       if (await this.authorized(auth, list.board_id)) {
         await Card.query().where('list_id', params.id).delete()
-        await auditor('List deleted', list.id, 'lists', 'navigator.platform', auth)
+        await auditor('List deleted', list.id, 'lists', request.headers()['user-agent'], auth)
         await list.delete()
         await transition.commit()
         return response.status(200).json({message: 'Lista removida com sucesso.'})

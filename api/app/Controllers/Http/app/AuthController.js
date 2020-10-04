@@ -12,10 +12,11 @@ class AuthController {
   async register({request, response, auth}) {
     const transition = await Database.beginTransaction()
     try {
+      const {name, email, username, group_id} = request.all()
       let user = await User.create(request.all())
       await auth.login(user)
       await transition.commit()
-      await auditor('Register of a new user', user.id, 'users', 'navigator.platform', auth)
+      await auditor('Register of a new user', user.id, 'users', request.headers()['user-agent'], auth)
       return response.status(201).json({name, email, username, group_id})
     } catch (error) {
       await transition.rollback()
@@ -31,8 +32,7 @@ class AuthController {
       await auth.attempt(email, password)
       const user = await auth.getUser()
       const { name, username } = user;
-      console.log(navigator);
-      // await auditor('User login', user.id, 'users', navigator.platform, auth)
+      await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
       return response.status(201).json({name, email, username})
     } catch (error) {
       await logger('info','Tentativa de acesso inválida', null, error)
@@ -44,7 +44,7 @@ class AuthController {
     try {
       const isLogged = await auth.check()
       if (isLogged) {
-        await auditor('Logout', auth.id, 'users', 'navigator.platform', auth)
+        await auditor('Logout', auth.id, 'users', request.headers()['user-agent'], auth)
         await auth.logout();
       }
       return response.status(201).json({message: 'Usuário deslogado.'})

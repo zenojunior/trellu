@@ -9,8 +9,11 @@ class AuditController {
 
   async audits({response, auth, request}) {
     try {
+      const {user_id, affected_table} = request.all()
       const page = request.input('page') === undefined ? 1 : request.input('page')
-      let audits = await Database.table('audit').paginate(page, 20)
+      const query = Audit.query()
+
+      const audits = await query.paginate(page, 10)
       return response.status(200).json(audits)
     } catch (error) {
       await logger('error', 'Erro na listagem de auditorias', auth, error)
@@ -21,6 +24,7 @@ class AuditController {
   async export({response, auth, request}) {
     const csv = new SpreadSheet()
     let audit = await Audit.with('user').get()
+    console.log(audit)
     const data = []
     data.push([
       'ID',
@@ -30,15 +34,15 @@ class AuditController {
       'Platform',
       'User'
     ])
-    audit.toJSON().forEach((audit) => {
-      data.push([
-        audit.operation,
-        audit.affected_id,
-        audit.affected_table,
-        audit.plataform,
-        audit.user.name
-      ])
-    })
+    // audit.toJSON().forEach((audit) => {
+    //   data.push([
+    //     audit.operation,
+    //     audit.affected_id,
+    //     audit.affected_table,
+    //     audit.platform,
+    //     audit.user.name
+    //   ])
+    // })
     csv.addSheet('Audit-' + Date.getDate(), data)
     csv.download('users-export')
   }

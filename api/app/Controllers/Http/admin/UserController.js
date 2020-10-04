@@ -27,7 +27,7 @@ class UserController {
       user.group_id = group_id;
       user.email = email;
       user.save()
-      await auditor('User updated', user.id, 'users', 'navigator.platform', auth)
+      await auditor('User updated', user.id, 'users', request.headers()['user-agent'], auth)
       return response.status(200).json({message: 'Usuário atualizado com sucesso.'})
     } catch (error) {
       await logger('error','Erro ao atualizar o usuário', auth, error)
@@ -45,7 +45,7 @@ class UserController {
     }
   }
 
-  async delete({response, auth, params}) {
+  async delete({response, auth, params, request}) {
     try {
       const user = await User.findOrFail(params.id)
       const boards = await Database.table('boards').where('user_id', user.id)
@@ -57,7 +57,7 @@ class UserController {
         }
       }
       await Database.table('boards').where('user_id', user.id).delete()
-      await auditor('User deleted', user.id, 'users', 'navigator.platform', auth)
+      await auditor('User deleted', user.id, 'users', request.headers()['user-agent'], auth)
       await user.delete()
       return response.status(200).json({message: 'Usuário removido com sucesso.'})
     } catch (error) {
