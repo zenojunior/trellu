@@ -22,30 +22,37 @@ class AuditController {
     }
   }
 
-  async export({response, auth, request}) {
-    const csv = new SpreadSheet()
-    let audit = await Audit.with('user').get()
-    console.log(audit)
-    const data = []
-    data.push([
-      'ID',
-      'Operation',
-      'Affected ID',
-      'Affected Table',
-      'Platform',
-      'User'
-    ])
-    // audit.toJSON().forEach((audit) => {
-    //   data.push([
-    //     audit.operation,
-    //     audit.affected_id,
-    //     audit.affected_table,
-    //     audit.platform,
-    //     audit.user.name
-    //   ])
-    // })
-    csv.addSheet('Audit-' + Date.getDate(), data)
-    csv.download('users-export')
+  async export({response, request}) {
+    try {
+      const audits = await Audit.query().with('user').fetch()
+      const csv = new SpreadSheet(request, 'csv')
+      const data = []
+      data.push([
+        'ID',
+        'Operation',
+        'Affected ID',
+        'Affected Table',
+        'Platform',
+        'User'
+      ])
+      audits.toJSON().forEach((audit) => {
+        data.push([
+          audit.operation,
+          audit.affected_id,
+          audit.affected_table,
+          audit.platform,
+          audit.user.name
+        ])
+      })
+      csv.addSheet('Audit', data)
+      return response.send(data)
+      // csv.download('audit-export')
+    } catch (error) {
+      return response.status(500).json({message: 'Erro na listagem de auditorias', error})
+
+    }
+
+
   }
 
   async audit({response, auth, params}) {
