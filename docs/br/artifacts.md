@@ -18,6 +18,7 @@ Data | Atualização
 24/08/2020 | **Criação das tabelas de auditoria e logs** <br> Por necessidade de controle dos processos e manutenção do sistema foi desenvolvida a auditoria e o log de erros.
 11/09/2020 | **Criação da seção adminitrativa do sistema** <br> Com necessidade de manter controles de ações em uma área mais abrangente, alem de acesso a parte de erros e mudanças, foi desenvolvida a seção adminitrativa do sistema.
 19/09/2020 | **Criação da tabela de grupos de usuários** <br> Criado para realizar o controle de acesso ao sistema sobre determinados grupos de usuários.
+02/10/2020 | **Subtituição das triggers da auditorias** <br> Substituidas Triggers e View relacionadas a criação e listagem de auditorias e substituida por funções na própria aplicação.
 
 ## Diagrama de classes
 
@@ -50,6 +51,8 @@ RF010 | Manter controle de usúarios na parte administrativa | Possibilitar aos 
 RF011 | Manter listagem de logs | Possibilitar aos usuários adminitradores acesso aos logs de erros | Média
 RF012 | Manter listagem de auditorias | Possibilitar aos usuários adminitradores acesso as auditorias | Média
 RF013 | Manter cadastro de grupos de usuários | Manter o cadastro de grupos de usuários, aos quais conterão controles de acesso específico ao sistema | Essencial
+RF014 | Possibilitar a exportação da auditoria em .CSV | Possibilitar que o usuário Administrador possa realizar a visualização e download dos dados da auditoria em arquivo .CSV | Média
+RF015 | Listagem da auditoria possuir filtro de pesquisa avançado | Possibilitar que o relatório de Auditoriaspossua um filtro de pesquisa avançado. | Média
 
 
 ## Requisitos não funcionais
