@@ -1,22 +1,30 @@
 <template>
   <admin-layout>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa exercitationem mollitia fugit accusantium et sapiente eveniet, repudiandae iste praesentium optio impedit qui laborum laudantium ipsum reiciendis sit deserunt expedita veritatis!</p>
+    <div class="columns">
+        <div class="column is-half">
+          <total-users />
+          <chart-structure-updates title="Atualizações nos boards por dia" />
+        </div>
+        <div class="column is-half">
+          <chart-users-auth title="Logins e logouts" />
+        </div>
+      </div>
+    </div>
   </admin-layout>
 </template>
 
 <script>
 import AdminLayout from '../../layout/AdminLayout'
+import ChartUsersAuth from '../../charts/ChartUsersAuth'
+import ChartStructureUpdates from '../../charts/ChartStructureUpdates'
+import ChartTotalUsers from '../../charts/ChartTotalUsers'
 
 export default {
   components: {
-    AdminLayout
-  },
-  data () {
-    return {
-    }
+    AdminLayout,
+    ChartUsersAuth,
+    ChartStructureUpdates,
+    'total-users': ChartTotalUsers
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

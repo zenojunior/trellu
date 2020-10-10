@@ -38,4 +38,8 @@ export default {
 .container {
   padding-top: 2rem;
 }
+.is-three-quarters {
+  overflow-y: auto;
+  height: 86vh;
+}
 </style>
