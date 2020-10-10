@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <navbar />
+  <div class="admin-layout">
+    <navbar-admin />
     <div class="container is-fluid pt-6">
       <div class="columns">
         <div class="column is-one-quarter">
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Navbar from '../partials/admin/NavbarAdmin'
+import NavbarAdmin from '../partials/admin/NavbarAdmin'
 import MenuAdmin from '../partials/admin/MenuAdmin'
 
 export default {
@@ -24,13 +24,17 @@ export default {
     }
   },
   components: {
-    Navbar,
+    NavbarAdmin,
     MenuAdmin
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.admin-layout {
+  top: 37px;
+  position: relative;
+}
 .container {
   padding-top: 2rem;
 }

@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <navbar></navbar>
+  <app-layout>
     <div class="container is-fluid pt-6">
       <ul class="columns is-variable is-3 ">
         <li v-for="(board, index) of boards" class="column is-one-quarter">
@@ -11,12 +10,12 @@
         </li>
       </ul>
     </div>
-  </div>
+  </app-layout>
 </template>
 
 <script>
-import Navbar from '../Navbar'
 import { mapState } from 'vuex'
+import AppLayout from '../layout/AppLayout'
 
 export default {
   created () {
@@ -57,7 +56,7 @@ export default {
     })
   },
   components: {
-    Navbar
+    AppLayout
   }
 }
 </script>

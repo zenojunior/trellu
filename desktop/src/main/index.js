@@ -21,8 +21,9 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     height: 768,
-    useContentSize: true,
     width: 1280,
+    minHeight: 300,
+    minWidth: 500,
     transparent: true,
     frame: false,
     titleBarStyle: 'hidden',

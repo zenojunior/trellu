@@ -10539,6 +10539,11 @@ timespan@2.3.x:
   resolved "https://registry.yarnpkg.com/timespan/-/timespan-2.3.0.tgz#4902ce040bd13d845c8f59b27e9d59bad6f39929"
   integrity sha1-SQLOBAvRPYRcj1myfp1ZutbzmSk=
 
+tiny-cookie@^1.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/tiny-cookie/-/tiny-cookie-1.0.1.tgz#753786079c642a3c3d0b2accad600f8de119ac2a"
+  integrity sha1-dTeGB5xkKjw9CyrMrWAPjeEZrCo=
+
 title-case@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/title-case/-/title-case-2.1.1.tgz#3e127216da58d2bc5becf137ab91dae3a7cd8faa"
@@ -11034,6 +11039,13 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
+
+vue-cookie@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/vue-cookie/-/vue-cookie-1.1.4.tgz#b8b46d112bda9f93a2f47017c2ed5282d2064fda"
+  integrity sha1-uLRtESvan5Oi9HAXwu1SgtIGT9o=
+  dependencies:
+    tiny-cookie "^1.0"
 
 vue-electron@^1.0.6:
   version "1.0.6"

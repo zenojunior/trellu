@@ -1,50 +1,47 @@
 <template>
-  <div>
-    <navbar></navbar>
-      <section class="user-header">
-          <div class="user-avatar">
-          <img src="~@/assets/user.svg" alt="User picture">
-          </div>
-          <h2 class="user-name">{{user.name}}</h2>
-      </section>
+  <app-layout>
+    <section class="user-header">
+      <div class="user-avatar">
+      <img src="~@/assets/user.svg" alt="User picture">
+      </div>
+      <h2 class="user-name">{{user.name}}</h2>
+    </section>
     <div class="container">
-      <section>
-        <b-tabs  position="is-centered" type="is-boxed">
-            <b-tab-item label="Perfil">
-                <div class="form-user-content">
-                <b-field label="Nome">
-                  <b-input type="text" v-model="user.name" required></b-input>
-                </b-field>
-                <b-field label="Usuário">
-                  <b-input type="text" v-model="user.username" disabled></b-input>
-                </b-field>
-                <b-field label="E-mail">
-                  <b-input type="email" v-model="user.email" disabled placeholder="exemplo@gmail.com" required></b-input>
-                </b-field>
-                <button class="button is-primary" @click="update()" :disabled="loading">Salvar</button>
-                </div>
-            </b-tab-item>
-            <b-tab-item label="Senhas">
-                <div class="form-user-content">
-                <b-field label="Nova senha">
-                    <b-input  type="password" v-model="newPassword" password-reveal required></b-input>
-                </b-field>
-                    <b-field label="Senha atual">
-                        <b-input type="password" v-model="password" password-reveal required ></b-input>
-                    </b-field>
-                    <button class="button is-primary" @click="updatePassword()" :disabled="loadingPassword">Salvar</button>
-                </div>
-            </b-tab-item>
-            <b-tab-item label="Atividades"></b-tab-item>
-            <b-tab-item label="Configurações"></b-tab-item>
-        </b-tabs>
-      </section>
+      <b-tabs  position="is-centered" type="is-boxed">
+          <b-tab-item label="Perfil">
+              <div class="form-user-content">
+              <b-field label="Nome">
+                <b-input type="text" v-model="user.name" required></b-input>
+              </b-field>
+              <b-field label="Usuário">
+                <b-input type="text" v-model="user.username" disabled></b-input>
+              </b-field>
+              <b-field label="E-mail">
+                <b-input type="email" v-model="user.email" disabled placeholder="exemplo@gmail.com" required></b-input>
+              </b-field>
+              <button class="button is-primary" @click="update()" :disabled="loading">Salvar</button>
+              </div>
+          </b-tab-item>
+          <b-tab-item label="Senhas">
+              <div class="form-user-content">
+              <b-field label="Nova senha">
+                  <b-input  type="password" v-model="newPassword" password-reveal required></b-input>
+              </b-field>
+                  <b-field label="Senha atual">
+                      <b-input type="password" v-model="password" password-reveal required ></b-input>
+                  </b-field>
+                  <button class="button is-primary" @click="updatePassword()" :disabled="loadingPassword">Salvar</button>
+              </div>
+          </b-tab-item>
+          <b-tab-item label="Atividades"></b-tab-item>
+          <b-tab-item label="Configurações"></b-tab-item>
+      </b-tabs>
     </div>
-  </div>
+  </app-layout>
 </template>
 
 <script>
-import Navbar from '../Navbar'
+import AppLayout from '../layout/AppLayout'
 export default {
   data () {
     return {
@@ -57,9 +54,6 @@ export default {
   },
   created () {
     this.user = JSON.parse(localStorage.getItem('user'))
-  },
-  components: {
-    Navbar
   },
   methods: {
     update () {
@@ -85,14 +79,14 @@ export default {
         this.loadingPassword = false
       })
     }
+  },
+  components: {
+    AppLayout
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.container {
-    padding-top: 1rem;
-}
 .user-header{
     margin-top: 55px;
     display: flex;

@@ -5,13 +5,13 @@
         <p class="modal-card-title">{{ account ? 'Entre com sua conta' : 'Crie sua conta' }}</p>
       </header>
       <section class="modal-card-body">
-        <b-field label="Usuário" v-if="!account">
+        <b-field label="Usuário" v-show="!account">
           <b-input type="text" v-model="username" required></b-input>
         </b-field>
         <b-field label="E-mail">
           <b-input type="email" v-model="email" placeholder="exemplo@gmail.com" required></b-input>
         </b-field>
-        <b-field label="Nome" v-if="!account">
+        <b-field label="Nome" v-show="!account">
           <b-input type="text" v-model="name" required></b-input>
         </b-field>
         <b-field label="Senha">
@@ -29,9 +29,9 @@
         <b-checkbox>Lembrar deste computador</b-checkbox>
       </section>
       <footer class="modal-card-foot">
-        <button class="button" type="button" @click="logout()">Logout</button>
+        <button v-show="false" class="button" type="button" @click="logout()">Logout</button>
         <button class="button" type="button" @click="close()">Cancelar</button>
-        <button class="button is-primary" @click="check()" :disabled="loading">Entrar</button>
+        <button class="button is-primary" @click="check()" :disabled="loading">{{ account ? 'Entrar' : 'Criar' }}</button>
       </footer>
     </div>
   </form>
@@ -44,8 +44,8 @@ export default {
     return {
       name: '',
       username: '',
-      email: '',
-      password: '',
+      email: 'me@zenojunior.com',
+      password: 'teste123',
       account: this.hasAccount,
       loading: false,
       errors: [],
@@ -67,6 +67,7 @@ export default {
         this.$router.push('/dashboard')
         this.close()
       }).catch(error => {
+        console.log('error', error)
         this.errors = error.errors ? [error.errors[0].message] : [error.message]
         setTimeout(() => { this.errors = [] }, this.errorsDuration)
       }).then(() => {

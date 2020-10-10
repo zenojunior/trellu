@@ -1,67 +1,68 @@
 <template>
-  <div :style="`${$global.backgroundStyle};height: ${window.height}px;width: ${window.width};display: flex;`">
-    <navbar-board :board="board" />
-    <horizontal-scroll>
-      <Container
-        style="padding: 20px"
-        orientation="horizontal"
-        @drop="onColumnDrop($event)"
-        drag-handle-selector=".column-drag-handle"
-        :drop-placeholder="upperDropPlaceholderOptions"
-      >
-        <Draggable v-for="list in listBoard" :key="list.id">
-          <div class="card-container">
-            <div class="card-column-header">
-              <span class="column-drag-handle">&#x2630;</span>
-              {{ list.title }}
-              <b-dropdown aria-role="list" position="is-bottom-left" style="float: right;margin-right: 5px;">
-                <b-button type="is-light" size="is-small" slot="trigger" slot-scope="{ active }">
-                  <b-icon icon="dots-horizontal"></b-icon>
+  <app-layout :board="board">
+    <div :style="{'background-color': $global.background, height: '100%'}">
+      <horizontal-scroll>
+        <Container
+          style="padding: 20px"
+          orientation="horizontal"
+          @drop="onColumnDrop($event)"
+          drag-handle-selector=".column-drag-handle"
+          :drop-placeholder="upperDropPlaceholderOptions"
+        >
+          <Draggable v-for="list in listBoard" :key="list.id">
+            <div class="card-container">
+              <div class="card-column-header">
+                <span class="column-drag-handle">&#x2630;</span>
+                {{ list.title }}
+                <b-dropdown aria-role="list" position="is-bottom-left" style="float: right;margin-right: 5px;">
+                  <b-button type="is-light" size="is-small" slot="trigger" slot-scope="{ active }">
+                    <b-icon icon="dots-horizontal"></b-icon>
+                  </b-button>
+                  <b-dropdown-item custom aria-role="menuitem" class="list-menu">
+                    <b-menu>
+                      <b-menu-list label="Ações da lista">
+                        <b-menu-item @click="archiveList(list.id)" icon="archive" label="Arquivar"></b-menu-item>
+                      </b-menu-list>
+                    </b-menu>
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+              <Container
+                group-name="col"
+                @drop="(e) => onCardDrop(list.id, e)"
+                @drag-start="(e) => draggingCard = true"
+                @drag-end="(e) => draggingCard = false"
+                :get-child-payload="getCardPayload(list.id)"
+                drag-class="card-ghost"
+                drop-class="card-ghost-drop"
+                :drop-placeholder="dropPlaceholderOptions"
+                :style="`max-height: ${listHeight }px;width: 100%`"
+              >
+                <Draggable v-for="(card, index) in list.children" :key="card.id">
+                  <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
+                    <p>{{ card.title }}</p>
+                    <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
+                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
+                      {{ card.date | moment("from", "now") }}
+                    </b-tag>
+                  </div>
+                </Draggable>
+              </Container>
+              <div class="card-column-footer">
+                <b-button @click="addCard(list.id)" icon-left="plus" expanded text type="is-light">
+                  Adicionar outro quadro
                 </b-button>
-                <b-dropdown-item custom aria-role="menuitem" class="list-menu">
-                  <b-menu>
-                    <b-menu-list label="Ações da lista">
-                      <b-menu-item @click="archiveList(list.id)" icon="archive" label="Arquivar"></b-menu-item>
-                    </b-menu-list>
-                  </b-menu>
-                </b-dropdown-item>
-              </b-dropdown>
+              </div>
             </div>
-            <Container
-              group-name="col"
-              @drop="(e) => onCardDrop(list.id, e)"
-              @drag-start="(e) => draggingCard = true"
-              @drag-end="(e) => draggingCard = false"
-              :get-child-payload="getCardPayload(list.id)"
-              drag-class="card-ghost"
-              drop-class="card-ghost-drop"
-              :drop-placeholder="dropPlaceholderOptions"
-              :style="`max-height: ${listHeight }px;width: 100%`"
-            >
-              <Draggable v-for="(card, index) in list.children" :key="card.id">
-                <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
-                  <p>{{ card.title }}</p>
-                  <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
-                    <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
-                    {{ card.date | moment("from", "now") }}
-                  </b-tag>
-                </div>
-              </Draggable>
-            </Container>
-            <div class="card-column-footer">
-              <b-button @click="addCard(list.id)" icon-left="plus" expanded text type="is-light">
-                Adicionar outro quadro
-              </b-button>
-            </div>
+          </Draggable>
+          <div class="card" data-type="new">
+            <b-button @click="addList('teste')" icon-left="plus" type="is-light" outlined expanded>Adicionar outra lista</b-button>
           </div>
-        </Draggable>
-        <div class="card" data-type="new">
-          <b-button @click="addList('teste')" icon-left="plus" type="is-light" outlined expanded>Adicionar outra lista</b-button>
-        </div>
-      </Container>
-    </horizontal-scroll>
-    <div class="board-modals"></div>
-  </div>
+        </Container>
+      </horizontal-scroll>
+      <div class="board-modals"></div>
+    </div>
+  </app-layout>
 </template>
 
 <script>
@@ -69,8 +70,8 @@ import { Container, Draggable } from 'vue-smooth-dnd'
 import { applyDrag, generateItems } from '../../utils/helpers'
 import HorizontalScroll from 'vue-horizontal-scroll'
 import 'vue-horizontal-scroll/dist/vue-horizontal-scroll.css'
-import NavbarBoard from '../NavbarBoard'
 import ModalCard from '../modals/ModalCard'
+import AppLayout from '../layout/AppLayout'
 
 const scene = {
   type: 'container',
@@ -97,7 +98,7 @@ const scene = {
 
 export default {
   name: 'Cards',
-  components: { Container, Draggable, NavbarBoard, HorizontalScroll },
+  components: { Container, Draggable, HorizontalScroll, AppLayout },
   data () {
     return {
       id: null,
@@ -146,7 +147,6 @@ export default {
     this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
       this.board.id = board.id
       this.board.featured = board.featured
-      this.board.color = board.color
       this.board.title = board.title
       this.board.user_id = board.user_id
       this.board.lists = board.lists
@@ -333,7 +333,7 @@ export default {
     top: unset!important;
   }
   .smooth-dnd-container.horizontal > .smooth-dnd-draggable-wrapper {
-    top: 75px;
+    display: inline-table;
     position: relative;
   }
 </style>
@@ -411,12 +411,11 @@ export default {
   }
   &[data-type="new"] {
     background-color: transparent;
-    margin-top: 80px;
     box-shadow: none;
     padding: 0;
     width: 320px;
     justify-content: center;
-    display: flex;
+    display: inline-table;
   }
 }
 

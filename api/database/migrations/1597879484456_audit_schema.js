@@ -11,7 +11,7 @@ class AuditSchema extends Schema {
       table.string('operation', 200).notNullable()
       table.integer('affected_id').unsigned().notNullable()
       table.string('affected_table', 20).notNullable()
-      table.string('platform', 40).notNullable()
+      table.string('platform', 300).notNullable()
       table.integer('user_id').unsigned().references('id').inTable('users').notNullable()
       table.timestamps()
     })

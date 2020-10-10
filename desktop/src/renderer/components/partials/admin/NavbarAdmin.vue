@@ -1,5 +1,5 @@
 <template>
-  <b-navbar shadow type="is-primary">
+  <b-navbar class="navbar" shadow type="is-primary">
         <template slot="start">
           <b-tooltip 
             label="Voltar ao app"
