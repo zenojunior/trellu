@@ -23,30 +23,34 @@ class AuthController {
   }
 
   async login({request, response, auth}) {
+
     const {email, password} = request.all()
-    return await auth.attempt(email, password)
-      .then(async () => {
-        const user = await auth.getUser()
-        const { name, username } = user;
-        await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
-        return response.status(201).json({name, email, username})
-      })
-      .catch(async (error) => {
-        const { message } = error;
-        await logger('info','Tentativa de acesso inválida', null, error)
-        return response.status(error.status).json({ message })
-      })
+    try {
+      await auth.attempt(email, password)
+      const user = await auth.getUser()
+      const { name, username } = user;
+      await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
+      return response.status(201).json({name, email, username})
+    } catch (error) {
+      await logger('info','Tentativa de acesso inválida', null, error)
+      return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
+    }
   }
 
-  async logout({response, auth}) {
+  async logout({request, response, auth}) {
     try {
-      await auditor('Logout', auth.id, 'users', request.headers()['user-agent'], auth)
-      await auth.logout();
+      const isLogged = await auth.check()
+      if (isLogged) {
+        await auditor('User logout', auth.id, 'users', request.headers()['user-agent'], auth)
+        await auth.logout();
+      }
       return response.status(201).json({message: 'Usuário deslogado.'})
     } catch (error) {
       await logger('error','Não há usuário autenticado', null, error)
       return response.status(403).json({message: 'Não há usuário autenticado.'})
     }
+
+
   }
 
 

@@ -12,6 +12,7 @@ Route.group(use('App/Routes/admin/Group')).prefix('api/admin/groups')
 Route.group(use('App/Routes/admin/Audit')).prefix('api/admin/audits')
 Route.group(use('App/Routes/admin/Export')).prefix('api/admin/export')
 Route.group(use('App/Routes/admin/Log')).prefix('api/admin/logs')
+Route.group(use('App/Routes/admin/Dashboard')).prefix('api/admin/dashboard')
 
 
 Route.get('/', () => {

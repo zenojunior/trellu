@@ -9,7 +9,7 @@ class AuditSchema extends Schema {
     this.create('audit', (table) => {
       table.increments()
       table.string('operation', 200).notNullable()
-      table.integer('affected_id').unsigned().notNullable()
+      table.integer('affected_id').unsigned().nullable()
       table.string('affected_table', 20).notNullable()
       table.string('platform', 300).notNullable()
       table.integer('user_id').unsigned().references('id').inTable('users').notNullable()

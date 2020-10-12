@@ -44,7 +44,7 @@ class BoardController {
       board.color = color
       board.archived = archived
       board.featured = featured
-      if(archived) await auditor('Board archived', board.id, 'boards', request.headers()['user-agent'], auth)
+      if (archived) await auditor('Board archived', board.id, 'boards', request.headers()['user-agent'], auth)
       await board.save()
       return response.status(200).json(board)
     } catch (error) {
@@ -103,6 +103,7 @@ class BoardController {
         }
       }
       await transition.commit()
+      await auditor('Board ordination', null, 'boards', request.headers()['user-agent'], auth)
       return response.status(200).json({message: 'Quadro ordenado com sucesso.'})
     } catch (error) {
       await transition.rollback()

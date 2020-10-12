@@ -10,6 +10,7 @@ class LogSchema extends Schema {
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('set null').nullable()
       table.string('level').defaultTo('debug')
       table.string('event')
+      table.integer('version_id').unsigned().references('id').inTable('versions')
       table.text('description')
       table.timestamps()
     })
