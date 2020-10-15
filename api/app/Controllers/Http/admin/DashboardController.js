@@ -10,7 +10,7 @@ class DashboardController {
     try {
       const date = request.input('date');
       const query = User.query()
-      if (date !== undefined) query.whereRaw('DATE(created_at) = ?', [date])
+      if (date) query.whereRaw('DATE(created_at) >= ?', [date])
       const accounts = await query.getCount()
       return response.status(200).json({total: accounts})
     } catch (error) {
@@ -30,9 +30,9 @@ class DashboardController {
       for (let month of months){
         let year = (month > currentMonth) ? currentYear - 1 : currentYear
         login.push(
-          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User login').where('user_id', user.id).fetch())
+          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User login').where('user_id', user.id).getCount())
         logout.push(
-          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User logout').where('user_id', user.id).fetch())
+          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User logout').where('user_id', user.id).getCount())
       }
       return response.status(200).json({login, logout})
     } catch (error) {
@@ -48,8 +48,9 @@ class DashboardController {
       let begin = moment(request.input('begin'));
       const end = moment(request.input('end'));
       while (begin <= end) {
-        ordinations.push(
-          await Audit.query().whereRaw('DATE(created_at) = ?', [moment(begin).format("YYYY-MM-DD")]).where('operation', 'Board ordination').where('user_id', user.id).fetch())
+        let x = moment(begin).valueOf()
+        let y = await Audit.query().whereRaw('DATE(created_at) = ?', begin).where('operation', 'Board ordination').where('user_id', user.id).getCount()
+        ordinations.push([x,y])
         begin = moment(begin).add(1, 'days');
       }
       return response.status(200).json({ordinations})

@@ -8,7 +8,7 @@
     </div>
     <div class="level-item has-text-centered">
       <div>
-        <b-select v-model="select" placeholder="Select a name">
+        <b-select v-model="select" @input="getData" placeholder="Select a name">
           <option
             v-for="option in options"
             :value="option.id"
@@ -29,39 +29,59 @@ export default {
       options: [
         {
           id: 1,
-          value: 123,
+          value: null,
           name: 'Total',
           suffix: 'totais'
         },
         {
           id: 2,
-          value: 20,
+          value: null,
           name: 'Últimos 30 dias',
-          suffix: 'no mês'
+          suffix: 'no mês',
+          subract: {
+            value: 30,
+            type: 'days'
+          }
         },
         {
           id: 3,
-          value: 2,
+          value: null,
           name: 'Últimos 7 dias',
-          suffix: 'na semana'
+          suffix: 'na semana',
+          subract: {
+            value: 7,
+            type: 'days'
+          }
         },
         {
           id: 4,
-          value: 0,
+          value: null,
           name: 'Últimas 24 horas',
-          suffix: 'hoje'
+          suffix: 'hoje',
+          subract: {
+            value: 24,
+            type: 'hours'
+          }
         }
       ]
     }
   },
+  created () {
+    this.getData()
+  },
+  methods: {
+    async getData () {
+      const option = this.options[this.select - 1]
+      let date = ''
+      if (option.subract) date = this.$moment().subtract(option.subract.value, option.subract.type).format('YYYY-MM-DD')
+      const { total } = await this.$api.post(`/api/admin/dashboard/accounts-creation?date=${date}`).then(res => res.data)
+      option.value = total
+    }
+  },
   computed: {
     selected () {
-      return this.options.find(option => option.id === this.select)
+      return this.options[this.select - 1]
     }
   }
 }
 </script>
-
-<style>
-
-</style>

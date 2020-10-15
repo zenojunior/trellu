@@ -2,8 +2,8 @@
   <article class="panel">
     <p v-if="title" class="panel-heading">{{ title }}</p>
     <div class="panel-body">
-      <chart height="200px" type="area" :options="optionsArea" :series="[{data: teste}]" />
-      <chart height="120px" type="bar" :options="optionsBar" :series="[{data: teste}]" />
+      <chart height="200px" type="area" :options="optionsArea" :series="[{data}]" />
+      <chart height="120px" type="bar" :options="optionsBar" :series="[{data}]" />
     </div>
   </article>
 </template>
@@ -18,7 +18,7 @@ export default {
   props: ['title'],
   data () {
     return {
-      teste: this.generateDayWiseTimeSeries(new Date('22 Apr 2017').getTime(), 115, { min: 30, max: 90 }),
+      data: [],
       optionsArea: {
         chart: {
           id: 'chart2',
@@ -111,32 +111,18 @@ export default {
         yaxis: {
           tickAmount: 2
         }
-      },
-      series: [
-        {
-          name: 'Logins',
-          data: [70, 91, 20, 3]
-        },
-        {
-          name: 'Logouts',
-          data: [5, 12, 2, 0]
-        }
-      ]
+      }
     }
   },
+  created () {
+    this.getData()
+  },
   methods: {
-    generateDayWiseTimeSeries (baseval, count, yrange) {
-      var i = 0
-      var series = []
-      while (i < count) {
-        var x = baseval
-        var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
-
-        series.push([x, y])
-        baseval += 86400000
-        i++
-      }
-      return series
+    async getData () {
+      const end = this.$moment().format('YYYY-MM-DD')
+      const begin = this.$moment().subtract('7', 'days').format('YYYY-MM-DD')
+      const { ordinations } = await this.$api.post(`/api/admin/dashboard/boards-ordinations`, { begin, end }).then(res => res.data)
+      this.data = ordinations
     }
   }
 }
