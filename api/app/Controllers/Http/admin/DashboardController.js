@@ -1,6 +1,8 @@
 'use strict'
 const User = use('App/Models/User')
 const Audit = use('App/Models/Audit')
+const Card = use('App/Models/Card')
+const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 const moment = use("moment");
 
@@ -21,18 +23,17 @@ class DashboardController {
 
   async loginsLogouts({response, auth, request}) {
     try {
-      const user = await auth.getUser()
       let login = []
       let logout = []
       const months = request.input('months')
       const currentMonth = new Date().getMonth()
       const currentYear = new Date().getFullYear()
-      for (let month of months){
-        let year = (month > currentMonth) ? currentYear - 1 : currentYear
+      for (let month of months) {
+        let year = (month > currentMonth + 1) ? currentYear - 1 : currentYear
         login.push(
-          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User login').where('user_id', user.id).getCount())
+          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User login').getCount())
         logout.push(
-          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User logout').where('user_id', user.id).getCount())
+          await Audit.query().whereRaw('EXTRACT(MONTH FROM created_at) = ?', [month]).whereRaw('EXTRACT(YEAR FROM created_at) = ?', [year]).where('operation', 'User logout').getCount())
       }
       return response.status(200).json({login, logout})
     } catch (error) {
@@ -43,20 +44,38 @@ class DashboardController {
 
   async boardsOrdinations({response, auth, request}) {
     try {
-      const user = await auth.getUser()
       let ordinations = [];
       let begin = moment(request.input('begin'));
       const end = moment(request.input('end'));
       while (begin <= end) {
         let x = moment(begin).valueOf()
-        let y = await Audit.query().whereRaw('DATE(created_at) = ?', begin).where('operation', 'Board ordination').where('user_id', user.id).getCount()
-        ordinations.push([x,y])
+        let y = await Audit.query().whereRaw('DATE(created_at) = ?', begin).where('operation', 'Board ordination').getCount()
+        ordinations.push([x, y])
         begin = moment(begin).add(1, 'days');
       }
       return response.status(200).json({ordinations})
     } catch (error) {
       await logger('error', 'Erro na consulta de criação de contas', auth, error)
       return response.status(500).json({message: 'Erro na consulta de criação de contas', error})
+    }
+  }
+
+  async wordsCloud({response, auth}) {
+    try {
+      let cloud = [];
+      let cards = await Card.query().select(Database.raw("regexp_split_to_table(title, ' ') as title")).fetch()
+      let words = cards.rows.map(function (item) {
+        return item['title'];
+      });
+      for(let word of words){
+        let x = word
+        let y = await Card.query().where('title', 'ilike', '%'+word+'%').getCount()
+        cloud.push([x, y])
+      }
+      return response.status(200).json({cloud})
+    } catch (error) {
+      await logger('error', 'Erro na consulta da nuvem de palavras', auth, error)
+      return response.status(500).json({message: 'Erro na consulta da nuvem de palavras', error})
     }
   }
 
