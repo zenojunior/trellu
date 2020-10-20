@@ -1,17 +1,28 @@
 <template>
   <b-navbar class="navbar" shadow type="is-primary">
-        <template slot="start">
-          <b-tooltip 
-            label="Voltar ao app"
-            type="is-dark"
-            position="is-right"
-          >
-            <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/dashboard' }" type="is-primary">
-              <b-icon icon="arrow-left"></b-icon>
-            </b-navbar-item>
-          </b-tooltip>
-        </template>
-    </b-navbar>
+    <template slot="start">
+      <b-tooltip 
+        label="Voltar ao app"
+        type="is-dark"
+        position="is-right"
+      >
+        <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/dashboard' }" type="is-primary">
+          <b-icon icon="arrow-left"></b-icon>
+        </b-navbar-item>
+      </b-tooltip>
+    </template>
+    <template slot="end">
+      <b-tooltip 
+        label="Imprimir"
+        type="is-dark"
+        position="is-left"
+      >
+        <b-button @click="print" class="button is-primary is-outlined is-inverted">
+          <b-icon icon="printer"></b-icon>
+        </b-button>
+      </b-tooltip>
+    </template>
+  </b-navbar>
 </template>
 
 <script>
@@ -36,17 +47,28 @@ export default {
           })
         }
       })
+    },
+    print () {
+      this.$emit('print', true)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.navbar-start {
-  align-items: center;
-  padding-left: 15px;
-  > span {
-    margin-right: 5px;
+.admin-layout {
+  .navbar {
+    &-start {
+      align-items: center;
+      padding-left: 15px;
+      > span {
+        margin-right: 5px;
+      }
+    }
+    &-end {
+      align-items: center;
+      padding-right: 15px;
+    }
   }
 }
 </style>

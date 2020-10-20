@@ -22,19 +22,10 @@ export default {
           id: 'vuechart-example'
         },
         xaxis: {
-          categories: ['Ago', 'Set', 'Out']
+          categories: ['Ago', 'Set', 'Out', `Nov`]
         }
       },
-      series: [
-        {
-          name: 'Logins',
-          data: []
-        },
-        {
-          name: 'Logouts',
-          data: []
-        }
-      ]
+      series: []
     }
   },
   created () {
@@ -42,9 +33,17 @@ export default {
   },
   methods: {
     async getData () {
-      const {login, logout} = await this.$api.post('/api/admin/dashboard/logins-logouts', {months: [8, 9, 10]}).then(res => res.data)
-      this.series[0].data = login
-      this.series[1].data = logout
+      const {login, logout} = await this.$api.post('/api/admin/dashboard/logins-logouts', {months: [8, 9, 10, 11]}).then(res => res.data)
+      this.series = [
+        {
+          name: 'Logins',
+          data: login.map((value) => parseInt(value))
+        },
+        {
+          name: 'Logouts',
+          data: logout.map((value) => parseInt(value))
+        }
+      ]
     }
   }
 }
