@@ -1,6 +1,6 @@
 <template>
   <div class="admin-layout">
-    <navbar-admin @print="print" />
+    <navbar-admin/>
     <div class="container is-fluid pt-6">
       <div class="columns">
         <div class="column is-one-quarter">
@@ -26,11 +26,6 @@ export default {
   components: {
     NavbarAdmin,
     MenuAdmin
-  },
-  methods: {
-    print () {
-      this.$emit('print', true)
-    }
   }
 }
 </script>

@@ -39,7 +39,7 @@
                 :style="`max-height: ${listHeight }px;width: 100%`"
               >
                 <Draggable v-for="(card, index) in list.children" :key="card.id">
-                  <div @click="openCard(card)" class="card" :style="{backgroundColor: '#fff'}">
+                  <div @click="openCard(card)" class="card-item" :style="{backgroundColor: '#fff'}">
                     <p>{{ card.title }}</p>
                     <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
                       <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
@@ -55,7 +55,7 @@
               </div>
             </div>
           </Draggable>
-          <div class="card" data-type="new">
+          <div class="card-item" data-type="new">
             <b-button @click="addList('teste')" icon-left="plus" type="is-light" outlined expanded>Adicionar outra lista</b-button>
           </div>
         </Container>
@@ -400,7 +400,7 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
 }
 
-.card {
+.card-item {
   margin: 5px;
   background-color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
