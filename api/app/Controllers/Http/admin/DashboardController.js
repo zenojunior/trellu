@@ -5,6 +5,8 @@ const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 const moment = use("moment");
+const Mail = use('Mail')
+const Helpers = use('Helpers')
 
 class DashboardController {
 
@@ -67,15 +69,36 @@ class DashboardController {
       let words = cards.rows.map(function (item) {
         return item['title'];
       });
-      for(let word of words){
+      for (let word of words) {
         let x = word
-        let y = await Card.query().where('title', 'ilike', '%'+word+'%').getCount()
+        let y = await Card.query().where('title', 'ilike', '%' + word + '%').getCount()
         cloud.push([x, y])
       }
       return response.status(200).json({cloud})
     } catch (error) {
       await logger('error', 'Erro na consulta da nuvem de palavras', auth, error)
       return response.status(500).json({message: 'Erro na consulta da nuvem de palavras', error})
+    }
+  }
+
+  async sendEmail({response, auth, request}) {
+    try {
+      let data = request.only(['email', 'name', 'message', 'subject'])
+      const attach = request.file('attach', {
+        size: '2mb'
+      })
+      data.attach = attach
+      await Mail.send('emails.report', data, (message) => {
+        message.to(data.email, data.name)
+          .subject(data.subject)
+        if (attach !== undefined) {
+          message.attach(data.attach.tmpPath)
+        }
+      })
+      return response.status(500).json({message: 'Email enviado com sucesso'})
+    }catch (error) {
+      await logger('error', 'Erro ao envia o email', auth, error)
+      return response.status(500).json({message: 'Erro ao envia o email', error})
     }
   }
 
