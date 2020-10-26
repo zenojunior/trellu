@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import electron from 'electron'
-const BrowserWindow = electron.remote.BrowserWindow
 export default new Vue({
   data: function () {
     return {
@@ -26,27 +24,6 @@ export default new Vue({
       console.log(err)
       if (err.startsWith('E_GUEST_ONLY')) return 'Você já está autenticado'
       return err
-    },
-    createModal (url) {
-      let modal = new BrowserWindow({
-        height: 568,
-        width: 768,
-        title: 'teste',
-        resizable: true,
-        maximizable: true,
-        transparent: true,
-        // frame: false,
-        // modal: true,
-        webPreferences: {
-          nodeIntegration: true
-        }
-      })
-
-      console.log(url)
-      modal.loadURL(url)
-      modal.on('closed', () => {
-        modal = null
-      })
     }
   },
   computed: {

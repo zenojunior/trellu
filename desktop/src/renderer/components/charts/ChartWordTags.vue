@@ -7,7 +7,6 @@
         height="200"
         padding="0"
         font="sans-serif"
-        @onWordClick="teste" 
         :width="width"
         :data="words" 
         :fontSizeMapper="fontSizeMapper"
@@ -30,7 +29,7 @@ export default {
     }
   },
   created () {
-    this.$api.get('/api/admin/dashboard/words-cloud').then(res => {
+    this.$api.post('/api/admin/dashboard/words-cloud').then(res => {
       this.cloud = res.data.cloud
     })
   },
@@ -49,11 +48,6 @@ export default {
       }
       return results
     }
-  },
-  methods: {
-    teste () {
-      console.log('teste')
-    }
   }
 }
 </script>
@@ -62,5 +56,6 @@ export default {
 .panel-block-light {
   border: 1px solid #ddd;
   border-top: none;
+  pointer-events: none;
 }
 </style>

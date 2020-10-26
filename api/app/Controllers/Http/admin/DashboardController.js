@@ -84,18 +84,17 @@ class DashboardController {
   async sendEmail({response, auth, request}) {
     try {
       let data = request.only(['email', 'name', 'message', 'subject'])
-      const attach = request.file('attach', {
-        size: '2mb'
-      })
-      data.attach = attach
+      const attach = request.file('attach', { size: '2mb' })
+      console.log(attach);
+      data.attach = attach;
       await Mail.send('emails.report', data, (message) => {
         message.to(data.email, data.name)
           .subject(data.subject)
-        if (attach !== undefined) {
-          message.attach(data.attach.tmpPath)
+        if (attach) {
+          message.attach(attach.tmpPath, {filename: `Anexo.${data.attach.subtype}`})
         }
       })
-      return response.status(500).json({message: 'Email enviado com sucesso'})
+      return response.status(200).json({message: 'Email enviado com sucesso'})
     }catch (error) {
       await logger('error', 'Erro ao envia o email', auth, error)
       return response.status(500).json({message: 'Erro ao envia o email', error})
