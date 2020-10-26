@@ -26,10 +26,10 @@ module.exports = {
   */
   smtp: {
     pool: true,
-    port: 2525,
-    host: 'smtp.mailtrap.io',
+    port: 465,
+    host: 'smtp.gmail.com',
     driver: 'smtp',
-    secure: false,
+    secure: true,
     auth: {
       user: Env.get('MAIL_USERNAME'),
       pass: Env.get('MAIL_PASSWORD')
