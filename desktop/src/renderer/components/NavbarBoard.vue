@@ -1,5 +1,5 @@
 <template>
-  <b-navbar type="is-primary" fixed-top :style="this.$global.backgroundStyle">
+  <b-navbar type="is-primary" :style="`background-color: ${board.color}`">
     <template slot="start">
       <input spellcheck="false" dir="auto" @focus="$event.target.select()" @change="updateBoardTitle()" v-model="board.title" class="board-title" type="text">
     </template>
@@ -53,7 +53,7 @@ export default {
   props: ['board'],
   data () {
     return {
-      colors: ['#0079bf', '#d29034', '#519839', '#b04632', '#89609e', '#cd5a91', '#4bbf6b', '#00aecc', '#838c91']
+      colors: ['#0079bf', '#d29034', '#519839', '#b04632', '#89609e', '#cd5a91', '#4bbf6b', '#00aecc', '#838c91', '#5E2B97']
     }
   },
   methods: {
@@ -68,8 +68,7 @@ export default {
       })
     },
     setBackground (color) {
-      this.$global.background = color
-      this.board.color = color
+      this.$global.background = this.board.color = color
       this.updateBoard()
     },
     updateBoard () {

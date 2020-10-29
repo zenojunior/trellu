@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "node ace test",
-    "migrate": "ENV_SILENT=true node ace migration:run --force"
+    "migrate": "ENV_SILENT=true node ace migration:run --force",
+    "migration:refresh": "node ace migration:refresh --seed"
   },
   "keywords": [
     "adonisjs",
@@ -26,8 +27,10 @@
     "@adonisjs/framework": "^5.0.9",
     "@adonisjs/ignitor": "^2.0.8",
     "@adonisjs/lucid": "^6.1.3",
+    "@adonisjs/mail": "^3.0.10",
     "@adonisjs/session": "^1.0.29",
     "@adonisjs/validator": "^5.0.6",
+    "@adonisjs/websocket": "^1.0.12",
     "mysql": "^2.18.1",
     "pg": "^8.3.0"
   },

@@ -1,21 +1,20 @@
 'use strict'
-const Hash = use('Hash')
-// const Mail = use('Mail')
 const Database = use('Database')
 const User = use('App/Models/User')
 const logger = use('App/Helpers/Logger')
+const auditor = use('App/Helpers/Auditor')
 
 class AuthController {
 
-  // POST
   async register({request, response, auth}) {
     const transition = await Database.beginTransaction()
     try {
+      const {name, email, username, group_id} = request.all()
       let user = await User.create(request.all())
       await auth.login(user)
       await transition.commit()
-      const { email, name, username } = user;
-      return response.status(201).json({name, email, username})
+      await auditor('Register of a new user', user.id, 'users', request.headers()['user-agent'], auth)
+      return response.status(201).json({name, email, username, group_id})
     } catch (error) {
       await transition.rollback()
       await logger('error','Erro ao cadastrar o usuário', null, error)
@@ -30,10 +29,11 @@ class AuthController {
       await auth.attempt(email, password)
       const user = await auth.getUser()
       const { name, username } = user;
+      await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
       return response.status(201).json({name, email, username})
     } catch (error) {
       await logger('info','Tentativa de acesso inválida', null, error)
-      return response.status(401).json({message: 'O e-mail ou senha estão incorretos.'})
+      return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
     }
   }
 
@@ -41,12 +41,13 @@ class AuthController {
     try {
       const isLogged = await auth.check()
       if (isLogged) {
+        await auditor('User logout', auth.id, 'users', request.headers()['user-agent'], auth)
         await auth.logout();
       }
       return response.status(201).json({message: 'Usuário deslogado.'})
     } catch (error) {
       await logger('error','Não há usuário autenticado', null, error)
-      return response.status(401).json({message: 'Não há usuário autenticado.'})
+      return response.status(403).json({message: 'Não há usuário autenticado.'})
     }
 
 
