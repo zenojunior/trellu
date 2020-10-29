@@ -42,7 +42,7 @@
                   <div @click="openCard(card)" class="card-item" :style="{backgroundColor: '#fff'}">
                     <p>{{ card.title }}</p>
                     <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
-                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
+                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>
                       {{ card.date | moment("from", "now") }}
                     </b-tag>
                   </div>
@@ -72,6 +72,7 @@ import HorizontalScroll from 'vue-horizontal-scroll'
 import 'vue-horizontal-scroll/dist/vue-horizontal-scroll.css'
 import ModalCard from '../modals/ModalCard'
 import AppLayout from '../layout/AppLayout'
+// import WsBoards from '../../utils/WsBoards'
 
 const scene = {
   type: 'container',
@@ -138,7 +139,8 @@ export default {
       this.$api.post(`/api/boards/${this.id}/ordenate`, {lists})
     }
   },
-  created () {
+  async created () {
+    // await WsBoards()
     window.addEventListener('resize', this.handleResize)
     document.body.classList.add('board')
     this.handleResize()
@@ -320,6 +322,9 @@ export default {
     log (...params) {
       console.log(...params)
     }
+  },
+  mounted () {
+  //   this.$ws.$emitToServer('trellu', 'message', {message: this.message})
   },
   destroyed () {
     window.removeEventListener('resize', this.handleResize)

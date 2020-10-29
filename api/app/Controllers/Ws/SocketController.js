@@ -1,9 +1,13 @@
 'use strict'
 
 class SocketController {
-  constructor ({ socket, request }) {
+  constructor({socket, request}) {
     this.socket = socket
     this.request = request
+  }
+
+  onMessage(data){
+    console.log(this.socket.id, data)
   }
 }
 
