@@ -55,7 +55,9 @@
     }
   },
   "dependencies": {
+    "@adonisjs/websocket-client": "^1.0.9",
     "@mdi/font": "^5.4.55",
+    "adonis-vue-websocket": "^2.0.2",
     "apexcharts": "^3.22.0",
     "axios": "^0.18.0",
     "buefy": "^0.8.20",
