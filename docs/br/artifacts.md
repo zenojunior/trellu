@@ -21,6 +21,8 @@ Data | Atualização
 02/10/2020 | **Subtituição das triggers da auditorias** <br> Substituidas Triggers e View relacionadas a criação e listagem de auditorias e substituida por funções na própria aplicação.
 12/10/2020 | **Tabela de versões adicionada** <br> Criada tabela de versões para controle de logs de erros vinculados à versões lançadas do sistema.
 16/10/2020 | **Criadas dos gráficos do Dashboard do administrador** <br> Criados gráficos de login e logout de usuários, número de contas cadastradas e de atualização dos quadros.
+25/10/2020 | **Exportação dos gráficos do Dashboard do administrador criados** <br> Com o intuito de facilitar o controle de dados do adminitrativo, forá desenvolvida a possibilidade de realizar exportações dos relatórios adminitrativos para PDF e JPG.
+30/10/2020 | **Criação do envio de E-mail** <br> Com intuito de facilitar a comunicação de dados, forá desenvolvido o envio de E-mail para relatórios adminitrativos.
 
 ## Diagrama de classes
 
@@ -60,6 +62,7 @@ RF017 | Disponibilizar gráfico de quadros atualizados | Disponibilizar visualiz
 RF018 | Disponibilizar gráfico de logins e logouts de usuários | Disponibilizar visualização de gráfico interativo o número de logins e logouts mensais dos usuários. Disponível somente para usuários adminitradores. | Média
 RF019 | Exportação dos gráficos do Dashboard para PDF | Disponibilizar a exportação dos gráficos do Dashboard do administrador para .PDF. | Média
 RF020 | Disponibilizar exibição de nuvem de palavras | Disponibilizar visualização de gráfico do conjunto de palavras mais utilizados nos títulos dos cartões. Disponível somente para usuários adminitradores. | Média
+RF021 | Disponibilizar envio de E-mail | Disponibilizar o envio de e-mail's freferentes a relaórios da área adminitrativa. Disponível somente para usuários adminitradores. | Média
 
 
 ## Requisitos não funcionais
@@ -68,7 +71,7 @@ Responsável por identificar funcionalidades não sensíveis ao usuário final, 
 
 Código | Título | Descrição | Prioridade
 ------------ | -------------  | -------------  | -------------
-RF001 | Tecnologias utilizadas | Adonis, Electron, Socket IO (ou Pusher), VueJS | Essencial
+RF001 | Tecnologias utilizadas | Adonis, Electron, Adonis WebSocket, VueJS | Essencial
 RF002  | Banco de Dados Postgres | Utilização de banco de dados relacional Postgres | Essencial
 RF003  |  Tamanho máximo de upload de arquivo 2MB | Possibilitar anexação de arquivos com no máximo 2 MegaBytes por arquivo | Essencial
 RF004  | Restrição no formato de arquivos | Arquivos a serem anexados serão restritos por tipo de documento, sendo somente permitidos arquivos como documentos, planilhas e imagens (.pdf, .doc, .jpeg, .png, etc) | Essencial
