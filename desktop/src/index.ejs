@@ -20,5 +20,32 @@
     <% } %>
 
     <!-- webpack builds are automatically injected -->
+    <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.js"></script>
+    <script src="https://unpkg.com/@adonisjs/websocket-client"></script>
+    <script>
+      window.ws = null
+      window.ws = adonis.Ws('ws://localhost:3333').connect()
+      window.ws.on('open', () => {
+        console.log('open')
+      })
+
+      window.ws.on('close', () => {
+        console.log('close')
+      })
+
+      // const board = ws.subscribe('board')
+      // board.on('ready', () => {
+      //   board.emit('message', 'hello')
+      // })
+
+      // board.on('error', (error) => {
+      //   console.log(error)
+      // })
+
+      // board.on('close', () => {
+      //   console.log('close')
+      // })
+      
+    </script>
   </body>
 </html>

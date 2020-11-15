@@ -5,6 +5,7 @@ const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 const auditor = use('App/Helpers/Auditor')
+const Ws = use('Ws')
 
 class BoardController {
 
@@ -88,6 +89,10 @@ class BoardController {
   }
 
   async ordenate({request, auth, response}) {
+    // const board = Ws.getChannel('board').topic('board')
+    // console.log(board)
+    // board.broadcast('message', 'hello everyone!')
+
     const transition = await Database.beginTransaction()
     try {
       const structure = request.input('lists')
