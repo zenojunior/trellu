@@ -1,3 +1,3 @@
 const Ws = use('Ws')
 
-Ws.channel('trellu', 'SocketController')
+Ws.channel('board', 'SocketController')

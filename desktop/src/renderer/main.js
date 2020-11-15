@@ -4,9 +4,6 @@ import Buefy from 'buefy'
 import VueMoment from 'vue-moment'
 import VueCookie from 'vue-cookie'
 import moment from 'moment-timezone'
-// import Ws from '@adonisjs/websocket-client'
-// import WsPlugin from 'adonis-vue-websocket'
-
 import App from './App'
 import router from './router'
 import store from './store'
@@ -40,7 +37,6 @@ Vue.use(VueMoment, {
   moment
 })
 Vue.use(VueCookie)
-// Vue.use(WsPlugin, { adonisWS: Ws })
 Vue.use(Buefy, {
   defaultIconPack: 'mdi'
 })

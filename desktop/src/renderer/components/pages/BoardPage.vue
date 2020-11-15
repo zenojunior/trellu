@@ -73,7 +73,6 @@ import 'vue-horizontal-scroll/dist/vue-horizontal-scroll.css'
 import ModalCard from '../modals/ModalCard'
 import AppLayout from '../layout/AppLayout'
 // import WsBoards from '../../utils/WsBoards'
-
 const scene = {
   type: 'container',
   props: {
@@ -140,7 +139,6 @@ export default {
     }
   },
   async created () {
-    // await WsBoards()
     window.addEventListener('resize', this.handleResize)
     document.body.classList.add('board')
     this.handleResize()

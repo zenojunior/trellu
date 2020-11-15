@@ -6,8 +6,9 @@ class SocketController {
     this.request = request
   }
 
-  onMessage(data){
+  onMessage(message){
     console.log(this.socket.id, data)
+    this.socket.broadcastToAll('message', message)
   }
 }
 
