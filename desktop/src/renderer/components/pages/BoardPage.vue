@@ -99,6 +99,14 @@ const scene = {
 export default {
   name: 'Cards',
   components: { Container, Draggable, HorizontalScroll, AppLayout },
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    boardUpdate (data) {
+      console.log(data)
+    }
+  },
   data () {
     return {
       id: null,

@@ -20,32 +20,18 @@
     <% } %>
 
     <!-- webpack builds are automatically injected -->
-    <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.js"></script>
-    <script src="https://unpkg.com/@adonisjs/websocket-client"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script>
-      window.ws = null
-      window.ws = adonis.Ws('ws://localhost:3333').connect()
-      window.ws.on('open', () => {
-        console.log('open')
-      })
-
-      window.ws.on('close', () => {
-        console.log('close')
-      })
-
-      // const board = ws.subscribe('board')
-      // board.on('ready', () => {
-      //   board.emit('message', 'hello')
-      // })
-
-      // board.on('error', (error) => {
-      //   console.log(error)
-      // })
-
-      // board.on('close', () => {
-      //   console.log('close')
-      // })
-      
-    </script>
+      var socket = require('socket.io-client')('http://127.0.0.1:3333');
+      socket.on('connect', function(){
+        socket.emit('message', {teste: 1234})
+      });
+      socket.on('boardUpdate', function(data){
+        console.log(data);
+      });
+      socket.on('disconnect', function(){
+        console.log('disconnect');
+      });
+    </script> -->
   </body>
 </html>

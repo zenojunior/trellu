@@ -5,7 +5,8 @@ const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 const auditor = use('App/Helpers/Auditor')
-const Ws = use('Ws')
+// const server = use('Server')
+// const socket = use('socket.io')(server.getInstance())
 
 class BoardController {
 
@@ -92,6 +93,8 @@ class BoardController {
     // const board = Ws.getChannel('board').topic('board')
     // console.log(board)
     // board.broadcast('message', 'hello everyone!')
+
+    // socket.emit('boardUpdate', { teste: 123 })
 
     const transition = await Database.beginTransaction()
     try {
