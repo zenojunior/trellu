@@ -62,5 +62,6 @@ module.exports = {
   | been elapsed, the client will consider server as dead.
   |
   */
-  clientAttempts: 3
+  clientAttempts: 3,
+  externalUrl: 'https://trellu-websocket.herokuapp.com'
 };

@@ -6,6 +6,7 @@ const Database = use('Database')
 const logger = use('App/Helpers/Logger')
 const axios = require('axios');
 const auditor = use('App/Helpers/Auditor')
+const Config = use('Config')
 
 class BoardController {
 
@@ -90,6 +91,8 @@ class BoardController {
 
   async ordenate({request, auth, response}) {
     const transition = await Database.beginTransaction()
+    const websocketUrl = Config.get('socket.externalUrl')
+
     let boardId = null
     try {
       const structure = request.input('lists')
@@ -105,7 +108,7 @@ class BoardController {
           card.save()
         }
       }
-      axios.post('http://c7cf7686beed.ngrok.io/webhooks/ordenate',
+      axios.post(`${websocketUrl}/webhooks/ordenate`,
         { structure: structure, boardId: boardId})
         .catch(error => {
           return response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'})

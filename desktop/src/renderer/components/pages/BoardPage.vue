@@ -103,7 +103,7 @@ export default {
     connect: function () {
       console.log('socket connected')
     },
-    boardUpdate (data) {
+    ordenate (data) {
       console.log(data)
     }
   },
