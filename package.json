@@ -1,0 +1,13 @@
+{
+  "engines": {
+    "node": "12.x"
+  },
+  "scripts": {
+    "heroku:install": "npm install -g heroku",
+    "heroku:bash": "heroku run bash --app=trellu-app",
+    "heroku:log": "heroku logs --tail --app=trellu-app",
+    "postinstall": "npm install --prefix=api",
+    "start": "ENV_SILENT=true npm start --prefix=api",
+    "doc": "docsify serve docs"
+  }
+}
