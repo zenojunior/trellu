@@ -25,7 +25,7 @@
           <b-dropdown-item aria-role="menu-item" :focusable="false" custom paddingless>
             <div class="modal-card" style="width:300px;margin-top: auto!important;">
               <section class="modal-card-body">
-                <b-button v-for="color in colors" @click="setBackground(color)" color="is-light" rounded :style="`background-color: ${color}`" />
+                <b-button v-for="color in colors" @click="setBackground(color)" color="is-light" rounded :style="`background-color: ${color}`" :key="color" />
               </section>
             </div>
           </b-dropdown-item>

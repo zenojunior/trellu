@@ -99,23 +99,19 @@ const scene = {
 export default {
   name: 'Cards',
   components: { Container, Draggable, HorizontalScroll, AppLayout },
-  sockets: {
-    connect: function () {
-      console.log('socket connected')
-    },
-    ordenate (data) {
-      console.log(data)
-    }
-  },
   data () {
     return {
       id: null,
+      hash: '',
       board: {
         color: '#7957d5',
         featured: false,
         lists: [],
         title: '',
         user_id: null
+      },
+      socket: {
+        structure: {}
       },
       card: {},
       listHeight: 0,
@@ -136,6 +132,13 @@ export default {
       }
     }
   },
+  sockets: {
+    ordenate (data) {
+      if (data.hash === this.hash) return
+      if (parseInt(this.id) !== data.boardId) return
+      this.socket.structure = data.structure
+    }
+  },
   watch: {
     'board.lists': function (newlists, oldLists) {
       if (newlists === oldLists) return
@@ -143,7 +146,11 @@ export default {
       let lists = JSON.parse(JSON.stringify(newlists))
       for (let list of lists) list.cards = list.cards.map(card => card.id)
       lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
-      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists})
+      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists, hash: this.hash})
+    },
+    'socket.structure': function (newStructure, oldStructure) {
+      let isDifference = !Object.keys(oldStructure).lengthA || (JSON.stringify(newStructure) !== JSON.stringify(oldStructure))
+      if (isDifference) this.getBoard()
     }
   },
   async created () {
@@ -151,15 +158,8 @@ export default {
     document.body.classList.add('board')
     this.handleResize()
     this.id = this.$route.params.id
-
-    this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
-      this.board.id = board.id
-      this.board.featured = board.featured
-      this.board.title = board.title
-      this.board.user_id = board.user_id
-      this.board.lists = board.lists
-      this.$global.background = this.board.color = board.color
-    })
+    this.hash = Math.random().toString(36).substring(7)
+    this.getBoard()
   },
   computed: {
     listBoard () {
@@ -188,6 +188,16 @@ export default {
     }
   },
   methods: {
+    getBoard () {
+      this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
+        this.board.id = board.id
+        this.board.featured = board.featured
+        this.board.title = board.title
+        this.board.user_id = board.user_id
+        this.board.lists = board.lists
+        this.$global.background = this.board.color = board.color
+      })
+    },
     openCard (card) {
       this.$buefy.modal.open({
         parent: this,
@@ -289,7 +299,7 @@ export default {
       })
     },
     archiveList (listId) {
-      this.$api.put(`/api/lists/${listId}`, {archived: true}).then(res => res.data).then(console.log)
+      this.$api.put(`/api/lists/${listId}`, {archived: true})
       let list = this.board.lists.find(list => list.id === listId)
       let totalCards = list.cards.length
       let listIndex = this.board.lists.indexOf(list)
@@ -324,13 +334,7 @@ export default {
       return index => {
         return this.scene.children.filter(p => p.id === columnId)[0].children[index]
       }
-    },
-    log (...params) {
-      console.log(...params)
     }
-  },
-  mounted () {
-  //   this.$ws.$emitToServer('trellu', 'message', {message: this.message})
   },
   destroyed () {
     window.removeEventListener('resize', this.handleResize)

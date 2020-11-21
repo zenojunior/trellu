@@ -4,7 +4,7 @@ import SocketIO from 'socket.io-client'
 import store from './store'
 
 Vue.use(new VueSocketIO({
-  debug: true,
+  debug: false,
   connection: SocketIO('https://trellu-websocket.herokuapp.com'),
   vuex: {
     store,
