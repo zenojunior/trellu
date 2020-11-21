@@ -4,9 +4,8 @@ const List = use('App/Models/List')
 const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const axios = require('axios');
 const auditor = use('App/Helpers/Auditor')
-// const server = use('Server')
-// const socket = use('socket.io')(server.getInstance())
 
 class BoardController {
 
@@ -90,17 +89,13 @@ class BoardController {
   }
 
   async ordenate({request, auth, response}) {
-    // const board = Ws.getChannel('board').topic('board')
-    // console.log(board)
-    // board.broadcast('message', 'hello everyone!')
-
-    // socket.emit('boardUpdate', { teste: 123 })
-
     const transition = await Database.beginTransaction()
+    let boardId = null
     try {
       const structure = request.input('lists')
       for (let [listIndex, listValue] of structure.entries()) {
         let list = await List.find(listValue.id)
+        boardId = list.board_id
         list.order = listIndex + 1
         list.save();
         for (let [cardIndex, cardValue] of listValue.cards.entries()) {
@@ -110,6 +105,12 @@ class BoardController {
           card.save()
         }
       }
+      axios.post('http://c7cf7686beed.ngrok.io/webhooks/ordenate',
+        { structure: structure, boardId: boardId})
+        .catch(error => {
+          return response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'})
+        });
+
       await transition.commit()
       await auditor('Board ordination', null, 'boards', request.headers()['user-agent'], auth)
       return response.status(200).json({message: 'Quadro ordenado com sucesso.'})
