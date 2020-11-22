@@ -91,8 +91,8 @@ class BoardController {
 
   async ordenate({request, auth, response}) {
     const transition = await Database.beginTransaction()
-    // const websocketUrl = Config.get('socket.externalUrl')
-    const websocketUrl = 'http://localhost:3000'
+    const websocketUrl = Config.get('socket.externalUrl')
+    // const websocketUrl = 'http://localhost:3000'
     const socketId = request.input('socketId')
 
     let boardId = null
