@@ -1,6 +1,6 @@
 {
   "name": "trellu",
-  "version": "0.0.2",
+  "version": "1.1.0",
   "author": "Zeno Sbardelotto Junior <zeno.sbardelotto@universo.univates.br>",
   "description": "Desktop Task Manager",
   "main": "./dist/electron/main.js",
