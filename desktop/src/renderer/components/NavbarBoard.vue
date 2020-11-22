@@ -74,6 +74,7 @@ export default {
     updateBoard () {
       const {title, color, featured, structure} = this.board
       this.$api.put(`/api/boards/${this.board.id}`, {title, color, featured, structure: JSON.stringify(structure)})
+      this.$emit('updateBoard', {})
     },
     deleteBoard (id) {
       this.$buefy.dialog.confirm({

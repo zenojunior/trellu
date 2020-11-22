@@ -1,5 +1,5 @@
 <template>
-  <app-layout :board="board">
+  <app-layout @updateBoard="updateBoard()" :board="board">
     <div :style="{'background-color': $global.background, height: '100%'}">
       <horizontal-scroll>
         <Container
@@ -102,16 +102,13 @@ export default {
   data () {
     return {
       id: null,
-      hash: '',
+      propagate: true,
       board: {
         color: '#7957d5',
         featured: false,
         lists: [],
         title: '',
         user_id: null
-      },
-      socket: {
-        structure: {}
       },
       card: {},
       listHeight: 0,
@@ -134,23 +131,17 @@ export default {
   },
   sockets: {
     ordenate (data) {
-      if (data.hash === this.hash) return
+      if (this.$socket.id === data.socketId) return
       if (parseInt(this.id) !== data.boardId) return
-      this.socket.structure = data.structure
+      this.propagate = false
+      this.getBoard()
     }
   },
   watch: {
-    'board.lists': function (newlists, oldLists) {
+    'board.lists': async function (newlists, oldLists) {
       if (newlists === oldLists) return
       if (JSON.stringify(oldLists) === '[]') return
-      let lists = JSON.parse(JSON.stringify(newlists))
-      for (let list of lists) list.cards = list.cards.map(card => card.id)
-      lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
-      this.updateBoard(lists)
-    },
-    'socket.structure': function (newStructure, oldStructure) {
-      let isDifference = !Object.keys(oldStructure).lengthA || (JSON.stringify(newStructure) !== JSON.stringify(oldStructure))
-      if (isDifference) this.getBoard()
+      this.updateBoard()
     }
   },
   async created () {
@@ -158,7 +149,6 @@ export default {
     document.body.classList.add('board')
     this.handleResize()
     this.id = this.$route.params.id
-    this.hash = Math.random().toString(36).substring(7)
     this.getBoard()
   },
   computed: {
@@ -198,8 +188,12 @@ export default {
         this.$global.background = this.board.color = board.color
       })
     },
-    updateBoard (lists) {
-      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists, socketId: this.$socket.id})
+    updateBoard: async function () {
+      let lists = JSON.parse(JSON.stringify(this.board.lists))
+      for (let list of lists) list.cards = list.cards.map(card => card.id)
+      lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
+      if (this.propagate) await this.$api.post(`/api/boards/${this.id}/ordenate`, { lists, socketId: this.$socket.id })
+      this.propagate = true
     },
     openCard (card) {
       this.$buefy.modal.open({
@@ -236,6 +230,7 @@ export default {
       let cardIndex = list.cards.indexOf(card)
       list.cards.splice(cardIndex, 1)
       this.$set(this.board.lists[listIndex], 'cards', list.cards)
+      this.updateBoard()
     },
     addCard (listId) {
       this.$buefy.dialog.prompt({
@@ -260,6 +255,7 @@ export default {
             let listIndex = this.board.lists.indexOf(list)
             let cards = list && list.cards ? list.cards : []
             this.$set(this.board.lists[listIndex], 'cards', Array.concat(cards, card))
+            this.updateBoard()
           })
         }
       })
@@ -296,6 +292,7 @@ export default {
             list['cards'] = []
             let lists = this.board.lists
             this.$set(this.board, 'lists', [...lists, list])
+            this.updateBoard()
           })
           this.scene.children.push(list)
         }
@@ -311,6 +308,7 @@ export default {
       if (!totalCards) message = 'Lista arquivada'
       else message = `Lista e ${totalCards} ${totalCards > 1 ? 'cartões' : 'cartão'} foram arquivados`
       this.$buefy.toast.open({ message, position: 'is-bottom-right' })
+      this.updateBoard()
     },
     handleResize () {
       this.window.height = window.innerHeight
