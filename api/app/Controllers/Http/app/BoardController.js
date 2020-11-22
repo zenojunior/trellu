@@ -91,8 +91,9 @@ class BoardController {
 
   async ordenate({request, auth, response}) {
     const transition = await Database.beginTransaction()
-    const websocketUrl = Config.get('socket.externalUrl')
-    const hash = request.input('hash')
+    // const websocketUrl = Config.get('socket.externalUrl')
+    const websocketUrl = 'http://localhost:3000'
+    const socketId = request.input('socketId')
 
     let boardId = null
     try {
@@ -109,7 +110,7 @@ class BoardController {
           card.save()
         }
       }
-      axios.post(`${websocketUrl}/webhooks/ordenate`,{ structure, boardId, hash })
+      axios.post(`${websocketUrl}/webhooks/ordenate`,{ structure, boardId, socketId })
         .catch(() => response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'}));
 
       await transition.commit()

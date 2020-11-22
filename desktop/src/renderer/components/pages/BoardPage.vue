@@ -146,7 +146,7 @@ export default {
       let lists = JSON.parse(JSON.stringify(newlists))
       for (let list of lists) list.cards = list.cards.map(card => card.id)
       lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
-      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists, hash: this.hash})
+      this.updateBoard(lists)
     },
     'socket.structure': function (newStructure, oldStructure) {
       let isDifference = !Object.keys(oldStructure).lengthA || (JSON.stringify(newStructure) !== JSON.stringify(oldStructure))
@@ -197,6 +197,9 @@ export default {
         this.board.lists = board.lists
         this.$global.background = this.board.color = board.color
       })
+    },
+    updateBoard (lists) {
+      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists, socketId: this.$socket.id})
     },
     openCard (card) {
       this.$buefy.modal.open({
