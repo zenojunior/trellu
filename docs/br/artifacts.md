@@ -23,6 +23,7 @@ Data | Atualização
 16/10/2020 | **Criadas dos gráficos do Dashboard do administrador** <br> Criados gráficos de login e logout de usuários, número de contas cadastradas e de atualização dos quadros.
 25/10/2020 | **Exportação dos gráficos do Dashboard do administrador criados** <br> Com o intuito de facilitar o controle de dados do adminitrativo, forá desenvolvida a possibilidade de realizar exportações dos relatórios adminitrativos para PDF e JPG.
 30/10/2020 | **Criação do envio de E-mail** <br> Com intuito de facilitar a comunicação de dados, forá desenvolvido o envio de E-mail para relatórios adminitrativos.
+20/11/2020 | **Comunicação em tempo real** <br> Desenvolvida para que os dados se comportassem de modo eficiente, a comunicação em tempo real foi desenvolvida, de modo que as informações trefegassem do servidor da API para a aplicação, e entre outros usuário de modo sincronizado.
 
 ## Diagrama de classes
 
@@ -71,7 +72,7 @@ Responsável por identificar funcionalidades não sensíveis ao usuário final, 
 
 Código | Título | Descrição | Prioridade
 ------------ | -------------  | -------------  | -------------
-RF001 | Tecnologias utilizadas | Adonis, Electron, Adonis WebSocket, VueJS | Essencial
+RF001 | Tecnologias utilizadas | Adonis, Electron, SocketIO, VueJS | Essencial
 RF002  | Banco de Dados Postgres | Utilização de banco de dados relacional Postgres | Essencial
 RF003  |  Tamanho máximo de upload de arquivo 2MB | Possibilitar anexação de arquivos com no máximo 2 MegaBytes por arquivo | Essencial
 RF004  | Restrição no formato de arquivos | Arquivos a serem anexados serão restritos por tipo de documento, sendo somente permitidos arquivos como documentos, planilhas e imagens (.pdf, .doc, .jpeg, .png, etc) | Essencial

@@ -21,6 +21,14 @@
 
 - [PostgreSQL](https://www.postgresql.org/) Banco de dados relacional de código aberto
 
+#### Documentação
+
+- [Docsify](https://docsify.js.org/) Gerador de documentação
+
+#### WebSocket
+
+- [Socket.IO](https://socket.io/) Biblioteca JavaScript para aplicativos da web em tempo real
+
 -----------------------------------------------
 > O que é **Boilerplate**? https://pt.wikipedia.org/wiki/Boilerplate_code <br>
 O que é **Framework**? https://pt.wikipedia.org/wiki/Framework

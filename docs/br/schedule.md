@@ -18,7 +18,7 @@ Implantação     |    | 🟪  |    |    |     | 🟪 |
 - [x] [Sprint 6 (05/10)](https://github.com/zenojunior/trellu/projects/8): Auditoria 2.0
 - [x] [Sprint 7 (19/10)](https://github.com/zenojunior/trellu/projects/9): Relatórios
 - [x] [Sprint 8 (04/11)](https://github.com/zenojunior/trellu/projects/10): Gerar gráficos para o dashboard e envio de e-mail
-- [ ] Sprint 9 (04/11): Comunicação em tempo real
+- [x] [Sprint 9 (23/11)](https://github.com/zenojunior/trellu/projects/11): Comunicação em tempo real
 - [ ] Sprint 10 (02/12): Geração do instalador da aplicação
 
 Veja o <a href="_media/cronograma.pdf" target="_blank">cronograma oficial</a> da disciplina de Projeto Integrador I.

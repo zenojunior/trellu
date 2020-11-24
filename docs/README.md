@@ -29,9 +29,10 @@
 - [x] Quadros
 - [x] Listas
 - [x] Cards
+- [x] Funciona em tempo real
 - [ ] Etiquetas nos cards
 - [ ] Checklist nos cards
-- [ ] Funciona em tempo real
+
 
 ### Propósito
 Essa aplicação desktop é um projeto para a disciplina de **Projeto Integrador I** do curso Engenharia de Software pela Universidade do Vale do Taquari. Nessa disciplina precisamos desenvolver um app desktop e nossa ideia era desenvolver um gerenciador de tarefas kanban que pudesse facilitar a vida das pessoas.
