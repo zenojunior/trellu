@@ -1,6 +1,6 @@
 {
   "name": "trellu",
-  "version": "0.0.2",
+  "version": "1.1.0",
   "author": "Zeno Sbardelotto Junior <zeno.sbardelotto@universo.univates.br>",
   "description": "Desktop Task Manager",
   "main": "./dist/electron/main.js",
@@ -55,14 +55,19 @@
     }
   },
   "dependencies": {
+    "@adonisjs/websocket-client": "^1.0.9",
     "@mdi/font": "^5.4.55",
+    "adonis-vue-websocket": "^2.0.2",
     "apexcharts": "^3.22.0",
     "axios": "^0.18.0",
     "buefy": "^0.8.20",
+    "bufferutil": "^4.0.2",
     "custom-electron-titlebar": "^3.2.3",
     "html2canvas": "^1.0.0-rc.7",
     "jspdf": "^2.1.1",
     "moment-timezone": "^0.5.31",
+    "socket.io-client": "^3.0.1",
+    "utf-8-validate": "^5.0.3",
     "vue": "^2.5.16",
     "vue-apexcharts": "^1.6.0",
     "vue-cookie": "^1.1.4",
@@ -72,6 +77,7 @@
     "vue-moment": "^4.1.0",
     "vue-router": "^3.0.1",
     "vue-smooth-dnd": "^0.8.1",
+    "vue-socket.io": "^3.0.10",
     "vuedraggable": "^2.24.0",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0"

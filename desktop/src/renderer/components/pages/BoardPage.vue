@@ -1,5 +1,5 @@
 <template>
-  <app-layout :board="board">
+  <app-layout @updateBoard="updateBoard()" :board="board">
     <div :style="{'background-color': $global.background, height: '100%'}">
       <horizontal-scroll>
         <Container
@@ -42,7 +42,7 @@
                   <div @click="openCard(card)" class="card-item" :style="{backgroundColor: '#fff'}">
                     <p>{{ card.title }}</p>
                     <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
-                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>  
+                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>
                       {{ card.date | moment("from", "now") }}
                     </b-tag>
                   </div>
@@ -102,6 +102,7 @@ export default {
   data () {
     return {
       id: null,
+      propagate: true,
       board: {
         color: '#7957d5',
         featured: false,
@@ -128,30 +129,27 @@ export default {
       }
     }
   },
-  watch: {
-    'board.lists': function (newlists, oldLists) {
-      if (newlists === oldLists) return
-      if (JSON.stringify(oldLists) === '[]') return
-      let lists = JSON.parse(JSON.stringify(newlists))
-      for (let list of lists) list.cards = list.cards.map(card => card.id)
-      lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
-      this.$api.post(`/api/boards/${this.id}/ordenate`, {lists})
+  sockets: {
+    ordenate (data) {
+      if (this.$socket.id === data.socketId) return
+      if (parseInt(this.id) !== data.boardId) return
+      this.propagate = false
+      this.getBoard()
     }
   },
-  created () {
+  watch: {
+    'board.lists': async function (newlists, oldLists) {
+      if (newlists === oldLists) return
+      if (JSON.stringify(oldLists) === '[]') return
+      this.updateBoard()
+    }
+  },
+  async created () {
     window.addEventListener('resize', this.handleResize)
     document.body.classList.add('board')
     this.handleResize()
     this.id = this.$route.params.id
-
-    this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
-      this.board.id = board.id
-      this.board.featured = board.featured
-      this.board.title = board.title
-      this.board.user_id = board.user_id
-      this.board.lists = board.lists
-      this.$global.background = this.board.color = board.color
-    })
+    this.getBoard()
   },
   computed: {
     listBoard () {
@@ -180,6 +178,23 @@ export default {
     }
   },
   methods: {
+    getBoard () {
+      this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
+        this.board.id = board.id
+        this.board.featured = board.featured
+        this.board.title = board.title
+        this.board.user_id = board.user_id
+        this.board.lists = board.lists
+        this.$global.background = this.board.color = board.color
+      })
+    },
+    updateBoard: async function () {
+      let lists = JSON.parse(JSON.stringify(this.board.lists))
+      for (let list of lists) list.cards = list.cards.map(card => card.id)
+      lists = lists.map(list => Object.assign({}, {id: list.id, cards: list.cards}))
+      if (this.propagate) await this.$api.post(`/api/boards/${this.id}/ordenate`, { lists, socketId: this.$socket.id })
+      this.propagate = true
+    },
     openCard (card) {
       this.$buefy.modal.open({
         parent: this,
@@ -215,6 +230,7 @@ export default {
       let cardIndex = list.cards.indexOf(card)
       list.cards.splice(cardIndex, 1)
       this.$set(this.board.lists[listIndex], 'cards', list.cards)
+      this.updateBoard()
     },
     addCard (listId) {
       this.$buefy.dialog.prompt({
@@ -239,6 +255,7 @@ export default {
             let listIndex = this.board.lists.indexOf(list)
             let cards = list && list.cards ? list.cards : []
             this.$set(this.board.lists[listIndex], 'cards', Array.concat(cards, card))
+            this.updateBoard()
           })
         }
       })
@@ -275,13 +292,14 @@ export default {
             list['cards'] = []
             let lists = this.board.lists
             this.$set(this.board, 'lists', [...lists, list])
+            this.updateBoard()
           })
           this.scene.children.push(list)
         }
       })
     },
     archiveList (listId) {
-      this.$api.put(`/api/lists/${listId}`, {archived: true}).then(res => res.data).then(console.log)
+      this.$api.put(`/api/lists/${listId}`, {archived: true})
       let list = this.board.lists.find(list => list.id === listId)
       let totalCards = list.cards.length
       let listIndex = this.board.lists.indexOf(list)
@@ -290,6 +308,7 @@ export default {
       if (!totalCards) message = 'Lista arquivada'
       else message = `Lista e ${totalCards} ${totalCards > 1 ? 'cartões' : 'cartão'} foram arquivados`
       this.$buefy.toast.open({ message, position: 'is-bottom-right' })
+      this.updateBoard()
     },
     handleResize () {
       this.window.height = window.innerHeight
@@ -316,9 +335,6 @@ export default {
       return index => {
         return this.scene.children.filter(p => p.id === columnId)[0].children[index]
       }
-    },
-    log (...params) {
-      console.log(...params)
     }
   },
   destroyed () {

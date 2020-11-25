@@ -31,8 +31,11 @@
     "@adonisjs/session": "^1.0.29",
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/websocket": "^1.0.12",
+    "@types/socket.io": "^2.1.11",
+    "axios": "^0.16.2",
     "mysql": "^2.18.1",
-    "pg": "^8.3.0"
+    "pg": "^8.3.0",
+    "socket.io": "^3.0.1"
   },
   "devDependencies": {},
   "autoload": {

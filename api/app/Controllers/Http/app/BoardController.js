@@ -4,7 +4,9 @@ const List = use('App/Models/List')
 const Card = use('App/Models/Card')
 const Database = use('Database')
 const logger = use('App/Helpers/Logger')
+const axios = require('axios');
 const auditor = use('App/Helpers/Auditor')
+const Config = use('Config')
 
 class BoardController {
 
@@ -89,10 +91,16 @@ class BoardController {
 
   async ordenate({request, auth, response}) {
     const transition = await Database.beginTransaction()
+    const websocketUrl = Config.get('socket.externalUrl')
+    // const websocketUrl = 'http://localhost:3000'
+    const socketId = request.input('socketId')
+
+    let boardId = null
     try {
       const structure = request.input('lists')
       for (let [listIndex, listValue] of structure.entries()) {
         let list = await List.find(listValue.id)
+        boardId = list.board_id
         list.order = listIndex + 1
         list.save();
         for (let [cardIndex, cardValue] of listValue.cards.entries()) {
@@ -102,6 +110,9 @@ class BoardController {
           card.save()
         }
       }
+      axios.post(`${websocketUrl}/webhooks/ordenate`,{ structure, boardId, socketId })
+        .catch(() => response.status(500).json({message: 'Erro ao atualizar ordenação das listas e cartões.'}));
+
       await transition.commit()
       await auditor('Board ordination', null, 'boards', request.headers()['user-agent'], auth)
       return response.status(200).json({message: 'Quadro ordenado com sucesso.'})

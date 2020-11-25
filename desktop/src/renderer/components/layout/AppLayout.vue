@@ -1,6 +1,6 @@
 <template>
   <div class="app-layout">
-    <navbar-board v-if="board" :board="board" />
+    <navbar-board v-if="board" @updateBoard="$emit('updateBoard', {})" :board="board" />
     <navbar v-else />
     <slot />
   </div>

@@ -25,7 +25,7 @@
           <b-dropdown-item aria-role="menu-item" :focusable="false" custom paddingless>
             <div class="modal-card" style="width:300px;margin-top: auto!important;">
               <section class="modal-card-body">
-                <b-button v-for="color in colors" @click="setBackground(color)" color="is-light" rounded :style="`background-color: ${color}`" />
+                <b-button v-for="color in colors" @click="setBackground(color)" color="is-light" rounded :style="`background-color: ${color}`" :key="color" />
               </section>
             </div>
           </b-dropdown-item>
@@ -74,6 +74,7 @@ export default {
     updateBoard () {
       const {title, color, featured, structure} = this.board
       this.$api.put(`/api/boards/${this.board.id}`, {title, color, featured, structure: JSON.stringify(structure)})
+      this.$emit('updateBoard', {})
     },
     deleteBoard (id) {
       this.$buefy.dialog.confirm({

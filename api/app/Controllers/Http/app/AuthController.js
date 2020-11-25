@@ -25,17 +25,18 @@ class AuthController {
   async login({request, response, auth}) {
 
     const {email, password} = request.all()
-    try {
+    // try {
       await auth.attempt(email, password)
-      const user = await auth.getUser()
-      const { name, username } = user;
-      await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
-      return response.status(201).json({name, email, username})
-    } catch (error) {
-      await logger('info','Tentativa de acesso inválida', null, error)
-      return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
+      auth.getUser().then(async user => {
+
+        const { name, username } = user;
+        // await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
+        return response.status(201).json({name, email, username})
+      }).catch(async error =>{
+        // await logger('info','Tentativa de acesso inválida', null, error)
+        return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
+      })
     }
-  }
 
   async logout({request, response, auth}) {
     try {
