@@ -2,8 +2,6 @@
 
 const Audit = use('App/Models/Audit')
 const logger = use('App/Helpers/Logger')
-const Database = use('Database')
-const SpreadSheet = use('SpreadSheet')
 
 class AuditController {
 
@@ -25,7 +23,6 @@ class AuditController {
   async export({response, request}) {
     try {
       const audits = await Audit.query().with('user').fetch()
-      const csv = new SpreadSheet(request, 'csv')
       const data = []
       data.push([
         'ID',
@@ -44,15 +41,10 @@ class AuditController {
           audit.user.name
         ])
       })
-      csv.addSheet('Audit', data)
       return response.send(data)
-      // csv.download('audit-export')
     } catch (error) {
       return response.status(500).json({message: 'Erro na listagem de auditorias', error})
-
     }
-
-
   }
 
   async audit({response, auth, params}) {
@@ -74,7 +66,6 @@ class AuditController {
       return response.status(500).json({message: 'Erro ao excluir a auditoria.', error})
     }
   }
-
 }
 
 module.exports = AuditController
