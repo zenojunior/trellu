@@ -5,15 +5,6 @@
     </template>
 
     <template slot="end">
-      <b-navbar-item tag="div">
-        <b-button 
-          @click="$router.push({ name: 'dashboard-page' })"
-          class="button is-primary is-outlined is-inverted"
-          icon-left="arrow-left"
-        >
-            Voltar
-        </b-button>
-      </b-navbar-item>
       <b-navbar-item tag="div" v-if="!loading" style="padding-left: 0">
         <b-dropdown position="is-bottom-left" append-to-body aria-role="menu" trap-focus>
           <a

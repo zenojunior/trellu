@@ -1,6 +1,6 @@
 <template>
   <b-navbar
-    class="navbar"
+    :class="['navbar', {'board-page': currentRouteName === 'board-page'}]"
     type="is-primary"
     shadow
     :style="{
@@ -10,6 +10,11 @@
     }"
   >
     <template slot="start" style="flex: 1">
+        <b-button
+          @click="$router.push({ name: 'dashboard-page' })"
+          class="button is-primary is-outlined is-inverted button-appbar"
+          icon-left="view-dashboard"
+        />
       <span class="logo">Tréllu</span>
     </template>
 
@@ -39,6 +44,11 @@ export default {
       isMaximized: false
     }
   },
+  computed: {
+    currentRouteName () {
+      return this.$route.name
+    }
+  },
   methods: {
     close () {
       window.close()
@@ -58,6 +68,23 @@ export default {
   padding-top: 0;
   padding-bottom: 0;
 }
+.navbar {
+  &.board-page {
+    .navbar-start {
+      flex: 1;
+      .logo {margin-right: auto}
+    }
+    &::after {
+      content: '';
+      background: rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      position: absolute;
+      pointer-events: none;
+    }
+  }
+}
 </style>
 <style lang="scss" scoped>
 .navbar {
@@ -68,6 +95,12 @@ export default {
   z-index: 10000;
   box-shadow: none!important;
   top: 0;
+
+  &:not(.board-page) {
+    .button-appbar {
+      display: none;
+    }
+  }
 
   button {
     -webkit-app-region: no-drag;
@@ -83,6 +116,17 @@ export default {
   margin-right: 0;
   &:hover {
     opacity: 1;
+  }
+}
+.button {
+  &.button-appbar {
+    height: 29px;
+    padding-top: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: 10px;
+    left: -5px;
+    top: 3px;
   }
 }
 </style>
