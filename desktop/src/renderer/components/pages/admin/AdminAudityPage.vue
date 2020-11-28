@@ -1,6 +1,11 @@
 <template>
   <admin-layout>
-    <h1 class="title is-5">Auditoria</h1>
+    <div class="is-flex">
+      <h1 class="title is-5">Auditoria</h1>
+      <b-tooltip label="Exportar CSV" type="is-dark" position="is-left" style="margin-left: auto">
+        <b-button @click="getCSV()" type="is-primary" icon-right="content-save"/>
+      </b-tooltip>
+    </div>
     <section class="filters columns">
       <b-field label="User Id" class="column is-one-fifth">
         <b-input @input="getData()" icon="account-search" v-model="filter.user_id" numeric />
@@ -15,11 +20,6 @@
           </b-select>
         </div>
       </b-field>
-      <b-field class="column">
-        <button class="button is-primary is-medium" @click="getCSV()">
-            CSV
-        </button>
-      </b-field>
     </section>
     <b-table
       :data="data"
@@ -29,7 +29,7 @@
       searchable
       @page-change="onPageChange"
       :debounce-search="1000"
-      :height="430"
+      :height="380"
       sticky-header
       :per-page="perPage"
       :current-page="page"
@@ -58,6 +58,9 @@
 
 <script>
 import AdminLayout from '../../layout/AdminLayout'
+import electron from 'electron'
+import fs from 'fs'
+const {dialog} = electron.remote
 
 export default {
   components: {
@@ -83,8 +86,20 @@ export default {
   },
   methods: {
     getCSV () {
+      var options = {
+        title: 'Salvar arquivo',
+        defaultPath: `audit-${new Date().getTime()}`,
+        buttonLabel: 'Salvar',
+
+        filters: [
+          {name: 'CSV Files', extensions: ['csv']},
+          {name: 'All Files', extensions: ['*']}
+        ]
+      }
       this.$api('api/admin/export').then(res => {
-        console.log(res.data)
+        dialog.showSaveDialog(options, (filename) => {
+          fs.writeFileSync(filename, res.data, 'utf-8')
+        })
       })
     },
     getData () {
@@ -98,7 +113,6 @@ export default {
       this.$api.get(`api/admin/audits?${params}`)
         .then(res => res.data)
         .then(data => {
-          console.log(data)
           this.data = data.data
           this.perPage = data.perPage
           this.total = parseInt(data.total)
