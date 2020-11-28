@@ -10,12 +10,19 @@
     }"
   >
     <template slot="start" style="flex: 1">
+      <div class="buttons-appbar">
         <b-button
           @click="$router.push({ name: 'dashboard-page' })"
-          class="button is-primary is-outlined is-inverted button-appbar"
+          class="button is-primary is-text button-appbar"
           icon-left="view-dashboard"
         />
-      <span class="logo">Tréllu</span>
+      </div>
+      <b-button
+          @click="$router.push({ name: 'dashboard-page' })"
+          class="logo is-text"
+      >
+        Tréllu
+      </b-button>
     </template>
 
     <template slot="end" style="flex: 1">
@@ -69,11 +76,30 @@ export default {
   padding-bottom: 0;
 }
 .navbar {
-  &.board-page {
-    .navbar-start {
-      flex: 1;
-      .logo {margin-right: auto}
+  .navbar-start {
+    flex: 1;
+    .logo {
+      opacity: .8;
+      font-size: 20px;
+      margin-left: auto;
+      margin-right: 0;
+      margin-right: auto;
+      cursor: pointer;
+      text-decoration: none;
+      background: transparent;
+      &:hover, &:focus {
+        background: transparent;
+        color: #fff;
+        outline: none;
+        box-sizing: none;
+        box-shadow: none;
+      }
+      &:hover {
+        opacity: 1;
+      }
     }
+  }
+  &.board-page {
     &::after {
       content: '';
       background: rgba(0, 0, 0, 0.1);
@@ -108,25 +134,19 @@ export default {
     background-color: rgba(0, 0, 0, 0.15);
   }
 }
-.logo {
-  opacity: .8;
-  cursor: pointer;
-  font-size: 20px;
-  margin-left: auto;
-  margin-right: 0;
-  &:hover {
-    opacity: 1;
-  }
-}
-.button {
-  &.button-appbar {
+.buttons-appbar {
+  position: absolute;
+  .button-appbar {
     height: 29px;
     padding-top: 1px;
     padding-left: 15px;
     padding-right: 15px;
     margin-right: 10px;
     left: -5px;
-    top: 3px;
+    &:hover {
+      background-color: whitesmoke;
+      color: #363636;
+    }
   }
 }
 </style>
