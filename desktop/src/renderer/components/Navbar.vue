@@ -1,9 +1,14 @@
 <template>
   <b-navbar class="navbar" shadow type="is-primary" >
-    <template slot="start" v-if="currentRouteName !== 'dashboard-page'">
-      <b-tooltip label="Voltar ao app" type="is-dark" position="is-right">
-        <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/dashboard' }" type="is-primary">
+    <template slot="start">
+      <b-tooltip v-if="currentRouteName !== 'dashboard-page'" label="Voltar ao app" type="is-dark" position="is-right">
+        <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/dashboard' }" type="is-primary" style="margin-right: 5px;">
           <b-icon icon="arrow-left" />
+        </b-navbar-item>
+      </b-tooltip>
+      <b-tooltip v-if="admin && currentRouteName === 'dashboard-page'" label="Admin" type="is-dark" position="is-bottom">
+        <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/admin' }" type="is-primary">
+            <b-icon icon="door-closed-lock"></b-icon>
         </b-navbar-item>
       </b-tooltip>
     </template>
@@ -17,15 +22,6 @@
         >
           <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/user' }" type="is-primary" style="margin-right: 10px;">
             <b-icon icon="account"></b-icon>
-          </b-navbar-item>
-        </b-tooltip>
-        <b-tooltip 
-          label="Admin"
-          type="is-dark"
-          position="is-bottom"
-        >
-          <b-navbar-item tag="router-link" class="button is-primary is-outlined is-inverted" :to="{ path: '/admin' }" type="is-primary" style="margin-right: 10px;">
-              <b-icon icon="cog"></b-icon>
           </b-navbar-item>
         </b-tooltip>
         <b-tooltip 
@@ -47,6 +43,16 @@ import Logo from './Logo'
 export default {
   components: {
     Logo
+  },
+  data () {
+    return {
+      admin: false
+    }
+  },
+  created () {
+    const user = JSON.parse(localStorage.getItem('user') || {})
+    const { admin } = user
+    this.admin = admin === true
   },
   methods: {
     logout () {

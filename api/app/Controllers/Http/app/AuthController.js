@@ -29,9 +29,10 @@ class AuthController {
       await auth.attempt(email, password)
       auth.getUser().then(async user => {
 
-        const { name, username } = user;
+        const { name, username, group_id } = user;
+        let admin = group_id === 1;
         // await auditor('User login', user.id, 'users', request.headers()['user-agent'], auth)
-        return response.status(201).json({name, email, username})
+        return response.status(201).json({name, email, username, admin})
       }).catch(async error =>{
         // await logger('info','Tentativa de acesso inválida', null, error)
         return response.status(403).json({message: 'O e-mail ou senha estão incorretos.'})
