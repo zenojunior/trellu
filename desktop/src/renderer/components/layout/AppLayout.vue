@@ -1,6 +1,6 @@
 <template>
   <div class="app-layout">
-    <navbar-board v-if="board" @updateBoard="$emit('updateBoard', {})" :board="board" />
+    <navbar-board v-if="board" @updateBoard="$emit('updateBoard', {})" :board="board" :loading="loading" />
     <navbar v-else />
     <slot />
   </div>
@@ -14,7 +14,7 @@ export default {
     Navbar,
     NavbarBoard
   },
-  props: ['board']
+  props: ['board', 'loading']
 }
 </script>
 

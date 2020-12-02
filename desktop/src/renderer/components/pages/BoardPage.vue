@@ -1,6 +1,6 @@
 <template>
-  <app-layout @updateBoard="updateBoard()" :board="board">
-    <div :style="{'background-color': $global.background, height: '100%'}">
+  <app-layout @updateBoard="updateBoard()" :board="board" :loading="loading">
+    <div :style="{'background-color': loading ? '#7957d5' : $global.background, height: '100%'}">
       <horizontal-scroll>
         <Container
           style="padding: 20px"
@@ -8,56 +8,64 @@
           @drop="onColumnDrop($event)"
           drag-handle-selector=".column-drag-handle"
           :drop-placeholder="upperDropPlaceholderOptions"
+          :style="{display: loading ? 'flex' : 'table'}"
         >
-          <Draggable v-for="list in listBoard" :key="list.id">
-            <div class="card-container">
-              <div class="card-column-header">
-                <span class="column-drag-handle">&#x2630;</span>
-                {{ list.title }}
-                <b-dropdown aria-role="list" position="is-bottom-left" style="float: right;margin-right: 5px;">
-                  <b-button type="is-light" size="is-small" slot="trigger" slot-scope="{ active }">
-                    <b-icon icon="dots-horizontal"></b-icon>
+          <template v-if="!loading">
+            <Draggable v-for="list in listBoard" :key="list.id">
+              <div class="card-container">
+                <div class="card-column-header">
+                  <span class="column-drag-handle">&#x2630;</span>
+                  {{ list.title }}
+                  <b-dropdown aria-role="list" position="is-bottom-left" style="float: right;margin-right: 5px;">
+                    <b-button type="is-light" size="is-small" slot="trigger" slot-scope="{ active }">
+                      <b-icon icon="dots-horizontal"></b-icon>
+                    </b-button>
+                    <b-dropdown-item custom aria-role="menuitem" class="list-menu">
+                      <b-menu>
+                        <b-menu-list label="Ações da lista">
+                          <b-menu-item @click="archiveList(list.id)" icon="archive" label="Arquivar"></b-menu-item>
+                        </b-menu-list>
+                      </b-menu>
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+                <Container
+                  group-name="col"
+                  @drop="(e) => onCardDrop(list.id, e)"
+                  @drag-start="(e) => draggingCard = true"
+                  @drag-end="(e) => draggingCard = false"
+                  :get-child-payload="getCardPayload(list.id)"
+                  drag-class="card-ghost"
+                  drop-class="card-ghost-drop"
+                  :drop-placeholder="dropPlaceholderOptions"
+                  :style="`max-height: ${listHeight }px;width: 100%`"
+                >
+                  <Draggable v-for="(card, index) in list.children" :key="card.id">
+                    <div @click="openCard(card)" class="card-item" :style="{backgroundColor: '#fff'}">
+                      <p>{{ card.title }}</p>
+                      <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
+                        <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>
+                        {{ card.date | moment("from", "now") }}
+                      </b-tag>
+                    </div>
+                  </Draggable>
+                </Container>
+                <div class="card-column-footer">
+                  <b-button @click="addCard(list.id)" icon-left="plus" expanded text type="is-light">
+                    Adicionar outro quadro
                   </b-button>
-                  <b-dropdown-item custom aria-role="menuitem" class="list-menu">
-                    <b-menu>
-                      <b-menu-list label="Ações da lista">
-                        <b-menu-item @click="archiveList(list.id)" icon="archive" label="Arquivar"></b-menu-item>
-                      </b-menu-list>
-                    </b-menu>
-                  </b-dropdown-item>
-                </b-dropdown>
+                </div>
               </div>
-              <Container
-                group-name="col"
-                @drop="(e) => onCardDrop(list.id, e)"
-                @drag-start="(e) => draggingCard = true"
-                @drag-end="(e) => draggingCard = false"
-                :get-child-payload="getCardPayload(list.id)"
-                drag-class="card-ghost"
-                drop-class="card-ghost-drop"
-                :drop-placeholder="dropPlaceholderOptions"
-                :style="`max-height: ${listHeight }px;width: 100%`"
-              >
-                <Draggable v-for="(card, index) in list.children" :key="card.id">
-                  <div @click="openCard(card)" class="card-item" :style="{backgroundColor: '#fff'}">
-                    <p>{{ card.title }}</p>
-                    <b-tag v-if="card.date" :type="checkColorClass(card.date, card.concluded)">
-                      <b-icon icon="clock-outline" size="is-small" style="margin-right: -3px"></b-icon>
-                      {{ card.date | moment("from", "now") }}
-                    </b-tag>
-                  </div>
-                </Draggable>
-              </Container>
-              <div class="card-column-footer">
-                <b-button @click="addCard(list.id)" icon-left="plus" expanded text type="is-light">
-                  Adicionar outro quadro
-                </b-button>
-              </div>
+            </Draggable>
+            <div class="card-item" data-type="new">
+              <b-button @click="addList('teste')" icon-left="plus" type="is-light" outlined expanded>Adicionar outra lista</b-button>
             </div>
-          </Draggable>
-          <div class="card-item" data-type="new">
-            <b-button @click="addList('teste')" icon-left="plus" type="is-light" outlined expanded>Adicionar outra lista</b-button>
-          </div>
+          </template>
+          <template v-else>
+            <div v-for="skeleton in skeletons" class="card-container" :key="skeleton" :style="{height: `${skeleton}px`}">
+              <b-skeleton></b-skeleton>
+            </div>
+          </template>
         </Container>
       </horizontal-scroll>
       <div class="board-modals"></div>
@@ -110,6 +118,7 @@ export default {
         title: '',
         user_id: null
       },
+      loading: false,
       card: {},
       listHeight: 0,
       window: {
@@ -117,6 +126,7 @@ export default {
         height: 0
       },
       scene,
+      skeletons: [300, 500, 423],
       upperDropPlaceholderOptions: {
         className: 'cards-drop-preview',
         animationDuration: '150',
@@ -179,6 +189,7 @@ export default {
   },
   methods: {
     getBoard () {
+      this.loading = true
       this.$api.get(`/api/boards/${this.id}`).then(res => res.data).then(board => {
         this.board.id = board.id
         this.board.featured = board.featured
@@ -186,6 +197,7 @@ export default {
         this.board.user_id = board.user_id
         this.board.lists = board.lists
         this.$global.background = this.board.color = board.color
+        this.loading = false
       })
     },
     updateBoard: async function () {
@@ -354,6 +366,9 @@ export default {
   }
 </style>
 <style lang="scss">
+.b-skeleton-item {
+  height: -webkit-fill-available;
+}
 .list-menu {
   padding-right: 10px;
   padding-left: 10px;

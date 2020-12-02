@@ -40,7 +40,7 @@
       </template>
       <template slot="detail" slot-scope="props">
         <article class="columns">
-          <div class="column is-one-quarter">
+          <div class="column is-one-quarter" v-if="props.row.user">
             <small><b>Id</b>: {{ props.row.user.id }}</small><br>
             <small><b>Nome</b>: {{ props.row.user.name }}</small><br>
             <small><b>Username</b>: {{ props.row.user.username }}</small><br>
@@ -84,7 +84,6 @@ export default {
       this.$api.get(`api/admin/logs?${params}`)
         .then(res => res.data)
         .then(data => {
-          console.log(data)
           this.data = data.data
           this.perPage = data.perPage
           this.total = parseInt(data.total)

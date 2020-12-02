@@ -120,7 +120,7 @@ export default {
   methods: {
     async getData () {
       const end = this.$moment().format('YYYY-MM-DD')
-      const begin = this.$moment().subtract('7', 'days').format('YYYY-MM-DD')
+      const begin = this.$moment().subtract('60', 'days').format('YYYY-MM-DD')
       const { ordinations } = await this.$api.post(`/api/admin/dashboard/boards-ordinations`, { begin, end }).then(res => res.data)
       this.data = ordinations
     }

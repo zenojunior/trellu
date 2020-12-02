@@ -2,7 +2,6 @@
   <b-navbar class="navbar" shadow type="is-primary">
     <template slot="start">
       <b-tooltip 
-        class="teste"
         label="Voltar ao app"
         type="is-dark"
         position="is-right"

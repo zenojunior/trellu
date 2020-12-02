@@ -9,7 +9,7 @@
     <div class="container">
       <b-tabs  position="is-centered" type="is-boxed">
           <b-tab-item label="Perfil">
-              <div class="form-user-content">
+            <div class="form-user-content">
               <b-field label="Nome">
                 <b-input type="text" v-model="user.name" required></b-input>
               </b-field>
@@ -19,22 +19,20 @@
               <b-field label="E-mail">
                 <b-input type="email" v-model="user.email" disabled placeholder="exemplo@gmail.com" required></b-input>
               </b-field>
-              <button class="button is-primary" @click="update()" :disabled="loading">Salvar</button>
-              </div>
+              <button class="button is-primary" @click="update()" :disabled="loading">Atualizar dados</button>
+            </div>
           </b-tab-item>
-          <b-tab-item label="Senhas">
-              <div class="form-user-content">
-              <b-field label="Nova senha">
-                  <b-input  type="password" v-model="newPassword" password-reveal required></b-input>
+          <b-tab-item label="Senha">
+            <div class="form-user-content">
+              <b-field label="Senha atual">
+                <b-input type="password" v-model="password" password-reveal required ></b-input>
               </b-field>
-                  <b-field label="Senha atual">
-                      <b-input type="password" v-model="password" password-reveal required ></b-input>
-                  </b-field>
-                  <button class="button is-primary" @click="updatePassword()" :disabled="loadingPassword">Salvar</button>
-              </div>
+              <b-field label="Nova senha">
+                <b-input type="password" v-model="newPassword" password-reveal required></b-input>
+              </b-field>
+              <button class="button is-primary" @click="updatePassword()" :disabled="(!newPassword.length || !password.length)">Alterar senha</button>
+            </div>
           </b-tab-item>
-          <b-tab-item label="Atividades"></b-tab-item>
-          <b-tab-item label="Configurações"></b-tab-item>
       </b-tabs>
     </div>
   </app-layout>
@@ -48,8 +46,8 @@ export default {
       user: {},
       loading: false,
       loadingPassword: false,
-      password: null,
-      newPassword: null
+      password: '',
+      newPassword: ''
     }
   },
   created () {
